@@ -1,28 +1,13 @@
 <template>
   <div>
-    <woot-button
-      size="small"
-      variant="smooth"
-      color-scheme="secondary"
-      icon="video-add"
-      class="join-call-button"
-      :is-loading="isLoading"
-      @click="joinTheCall"
-    >
+    <woot-button size="small" variant="smooth" color-scheme="secondary" icon="video-add" class="join-call-button"
+      :is-loading="isLoading" @click="joinTheCall">
       {{ $t('INTEGRATION_SETTINGS.DYTE.CLICK_HERE_TO_JOIN') }}
     </woot-button>
-    <div v-if="dyteAuthToken" class="video-call--container">
-      <iframe
-        :src="meetingLink"
-        allow="camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;"
-      />
-      <woot-button
-        size="small"
-        variant="smooth"
-        color-scheme="secondary"
-        class="join-call-button"
-        @click="leaveTheRoom"
-      >
+    <div v-if="isOpen" class="video-call--container">
+      <iframe :src="this.meetingUrl"
+        allow="camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;" />
+      <woot-button size="small" variant="smooth" color-scheme="secondary" class="join-call-button" @click="leaveTheRoom">
         {{ $t('INTEGRATION_SETTINGS.DYTE.LEAVE_THE_ROOM') }}
       </woot-button>
     </div>
@@ -30,8 +15,13 @@
 </template>
 <script>
 import DyteAPI from 'dashboard/api/integrations/dyte';
-import { buildDyteURL } from 'shared/helpers/IntegrationHelper';
+import { buildDyteURL, buildJitsiURL } from 'shared/helpers/IntegrationHelper';
 import alertMixin from 'shared/mixins/alertMixin';
+import Auth from '../../../../../api/auth';
+import { sendModuleCall } from '../../../../../helper/actionCable'
+
+// app/javascript/dashboard/helper/actionCable.js
+// app/javascript/dashboard/components/widgets/conversation/bubble/integrations/Dyte.vue
 
 export default {
   mixins: [alertMixin],
@@ -46,20 +36,54 @@ export default {
     },
   },
   data() {
-    return { isLoading: false, dyteAuthToken: '', isSDKMounted: false };
+    return {
+      isLoading: false, dyteAuthToken: '', isSDKMounted: false, isOpen: false, meetingUrl: '',
+      inComingCall: false
+    };
   },
   computed: {
     meetingLink() {
-      return buildDyteURL(this.meetingData.room_name, this.dyteAuthToken);
+      return buildJitsiURL()
     },
   },
+
   methods: {
+    createModule() {
+      const inComingCallResult = sendModuleCall();
+      this.inComingCall = inComingCallResult;
+      console.log(this.inComingCall, "inComingCall1")
+    },
     async joinTheCall() {
       this.isLoading = true;
+      this.isOpen = true;
+      const {
+        'access-token': accessToken,
+        'token-type': tokenType,
+        client,
+        expiry,
+        uid,
+      } = Auth.getAuthData();
+      const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
+      const accountId = window.location.href.split('/').slice(5, 6).join('/');
+      const conversationId = window.location.href.split('/').slice(7, 8).join('/');
+      const fullUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting`;
       try {
-        const { data: { authResponse: { authToken } = {} } = {} } =
-          await DyteAPI.addParticipantToMeeting(this.messageId);
-        this.dyteAuthToken = authToken;
+        fetch(fullUrl, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json, text/plain, */*',
+            'access-token': accessToken,
+            'token-type': tokenType,
+            client,
+            expiry,
+            uid,
+          }
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            this.meetingUrl = data.meeting_url;
+          });
       } catch (err) {
         this.showAlert(this.$t('INTEGRATION_SETTINGS.DYTE.JOIN_ERROR'));
       } finally {
@@ -68,8 +92,13 @@ export default {
     },
     leaveTheRoom() {
       this.dyteAuthToken = '';
+      this.isOpen = false;
+      this.meetingUrl = '';
     },
   },
+  // mounted() {
+  //   this.createModule();
+  // },
 };
 </script>
 <style lang="scss">

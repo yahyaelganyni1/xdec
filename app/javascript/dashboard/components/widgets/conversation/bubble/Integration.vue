@@ -1,9 +1,5 @@
 <template>
-  <dyte-video-call
-    v-if="showDyteIntegration"
-    :message-id="messageId"
-    :meeting-data="contentAttributes.data"
-  />
+  <dyte-video-call v-if="showDyteIntegration" :message-id="messageId" :meeting-data="contentAttributes.data" />
 </template>
 <script>
 import DyteVideoCall from './integrations/Dyte.vue';

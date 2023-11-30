@@ -1,54 +1,25 @@
 <template>
-  <div
-    class="agent-message-wrap group"
-    :class="{
-      'has-response': hasRecordedResponse || isASubmittedForm,
-    }"
-  >
+  <div class="agent-message-wrap group" :class="{
+    'has-response': hasRecordedResponse || isASubmittedForm,
+  }">
     <div v-if="!isASubmittedForm" class="agent-message">
       <div class="avatar-wrap">
-        <thumbnail
-          v-if="message.showAvatar || hasRecordedResponse"
-          :src="avatarUrl"
-          size="24px"
-          :username="agentName"
-        />
+        <thumbnail v-if="message.showAvatar || hasRecordedResponse" :src="avatarUrl" size="24px" :username="agentName" />
       </div>
       <div class="message-wrap">
         <div v-if="hasReplyTo" class="flex mt-2 mb-1 text-xs">
           <reply-to-chip :reply-to="replyTo" />
         </div>
         <div class="flex gap-1">
-          <drag-wrapper
-            class="space-y-2"
-            direction="right"
-            :disabled="!allowReplyTo"
-            @dragged="toggleReply"
-          >
-            <AgentMessageBubble
-              v-if="shouldDisplayAgentMessage"
-              :content-type="contentType"
-              :message-content-attributes="messageContentAttributes"
-              :message-id="message.id"
-              :message-type="messageType"
-              :message="message.content"
-            />
-            <div
-              v-if="hasAttachments"
-              class="chat-bubble has-attachment agent"
-              :class="(wrapClass, $dm('bg-white', 'dark:bg-slate-700'))"
-            >
-              <div
-                v-for="attachment in message.attachments"
-                :key="attachment.id"
-              >
-                <image-bubble
-                  v-if="attachment.file_type === 'image' && !hasImageError"
-                  :url="attachment.data_url"
-                  :thumb="attachment.data_url"
-                  :readable-time="readableTime"
-                  @error="onImageLoadError"
-                />
+          <drag-wrapper class="space-y-2" direction="right" :disabled="!allowReplyTo" @dragged="toggleReply">
+            <AgentMessageBubble v-if="shouldDisplayAgentMessage" :content-type="contentType"
+              :message-content-attributes="messageContentAttributes" :message-id="message.id" :message-type="messageType"
+              :message="message.content" />
+            <div v-if="hasAttachments" class="chat-bubble has-attachment agent"
+              :class="(wrapClass, $dm('bg-white', 'dark:bg-slate-700'))">
+              <div v-for="attachment in message.attachments" :key="attachment.id">
+                <image-bubble v-if="attachment.file_type === 'image' && !hasImageError" :url="attachment.data_url"
+                  :thumb="attachment.data_url" :readable-time="readableTime" @error="onImageLoadError" />
                 <audio v-else-if="attachment.file_type === 'audio'" controls>
                   <source :src="attachment.data_url" />
                 </audio>
@@ -57,29 +28,18 @@
             </div>
           </drag-wrapper>
           <div class="flex flex-col justify-end">
-            <message-reply-button
-              v-if="allowReplyTo"
-              class="transition-opacity delay-75 opacity-0 group-hover:opacity-100 sm:opacity-0"
-              @click="toggleReply"
-            />
+            <message-reply-button v-if="allowReplyTo"
+              class="transition-opacity delay-75 opacity-0 group-hover:opacity-100 sm:opacity-0" @click="toggleReply" />
           </div>
         </div>
-        <p
-          v-if="message.showAvatar || hasRecordedResponse"
-          v-dompurify-html="agentName"
-          class="agent-name"
-          :class="$dm('text-slate-700', 'dark:text-slate-200')"
-        />
+        <p v-if="message.showAvatar || hasRecordedResponse" v-dompurify-html="agentName" class="agent-name"
+          :class="$dm('text-slate-700', 'dark:text-slate-200')" />
       </div>
     </div>
 
     <UserMessage v-if="hasRecordedResponse" :message="responseMessage" />
     <div v-if="isASubmittedForm">
-      <UserMessage
-        v-for="submittedValue in submittedFormValues"
-        :key="submittedValue.id"
-        :message="submittedValue"
-      />
+      <UserMessage v-for="submittedValue in submittedFormValues" :key="submittedValue.id" :message="submittedValue" />
     </div>
   </div>
 </template>
@@ -117,11 +77,11 @@ export default {
   props: {
     message: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
     replyTo: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
   },
   data() {

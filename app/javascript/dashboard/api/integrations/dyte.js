@@ -13,7 +13,14 @@ class DyteAPI extends ApiClient {
     });
   }
 
+  createJitsiMeeting(conversationId) {
+    return axios.post(`${this.url}/create_jitsi_meeting`, {
+      conversation_id: conversationId,
+    });
+  }
+
   addParticipantToMeeting(messageId) {
+    console.log('add participant to meeting url: ', this.url);
     return axios.post(`${this.url}/add_participant_to_meeting`, {
       message_id: messageId,
     });

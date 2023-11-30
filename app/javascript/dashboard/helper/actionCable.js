@@ -1,6 +1,19 @@
 import AuthAPI from '../api/auth';
 import BaseActionCableConnector from '../../shared/helpers/BaseActionCableConnector';
 import DashboardAudioNotificationHelper from './AudioAlerts/DashboardAudioNotificationHelper';
+// /components/widgets/conversation/bubble/integrations/Dyte.vue'
+import Auth from '../api/auth';
+// app/javascript/dashboard/api/auth.js
+// app/javascript/dashboard/helper/actionCable.js
+export const sendModuleCall = (data) => {
+  console.log('sendModuleCall fired');
+
+  return {
+    type: 'sendModuleCall',
+    payload: data,
+    newCall: data ? true : false,
+  }
+};
 
 class ActionCableConnector extends BaseActionCableConnector {
   constructor(app, pubsubToken) {
@@ -106,6 +119,147 @@ class ActionCableConnector extends BaseActionCableConnector {
   onLogout = () => AuthAPI.logout();
 
   onMessageCreated = data => {
+    console.log('onMessageCreated fired');
+
+    if (data.content_type === 'integrations' && data.content.includes('has started a video call')) {
+      console.log(this.app, 'this.app');
+      console.log(data);
+      const popupModal = document.createElement('div');
+      popupModal.classList.add('popup-modal');
+      popupModal.innerHTML = `
+        <div class="popup-content">
+          <p style="font-size: 20px; font-weight: 600;">
+            incoming call from ${data.content.split(' ')[0]}
+          </p>
+          <button id="acceptCallBtn">Accept</button>
+          <button id="closeModalBtn">X</button>
+        </div>
+      `;
+      document.body.appendChild(popupModal);
+      const closeModalBtn = document.getElementById('closeModalBtn');
+      closeModalBtn.addEventListener('click', () => {
+        popupModal.remove();
+      });
+
+      const acceptCallBtn = document.getElementById('acceptCallBtn');
+      acceptCallBtn.style.cursor = 'pointer';
+      acceptCallBtn.style.marginRight = '10px';
+      acceptCallBtn.style.marginLeft = '10px';
+      acceptCallBtn.style.backgroundColor = '#0D3868';
+      acceptCallBtn.style.color = '#fff';
+      acceptCallBtn.style.padding = '10px';
+
+      acceptCallBtn.addEventListener('click', () => {
+
+
+        popupModal.remove();
+        console.log('accept call');
+
+        const {
+          'access-token': accessToken,
+          'token-type': tokenType,
+          client,
+          expiry,
+          uid,
+        } = Auth.getAuthData();
+        const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
+        const accountId = data.account_id;
+        const conversationId = data.conversation_id;
+        const fullUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting`;
+        const iframe = document.createElement('iframe');
+
+        fetch(fullUrl, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json, text/plain, */*',
+            'access-token': accessToken,
+            'token-type': tokenType,
+            client,
+            expiry,
+            uid,
+          }
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Success:', data);
+            iframe.src = data.meeting_url;
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+
+        const iframeContainer = document.createElement('div');
+        iframeContainer.style.position = 'fixed';
+        iframeContainer.style.top = '0';
+        iframeContainer.style.left = '0';
+        iframeContainer.style.width = '100%';
+        iframeContainer.style.height = '100%';
+        iframeContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        iframeContainer.style.zIndex = '9999';
+
+        const iframeCloseButton = document.createElement('button');
+        iframeCloseButton.innerText = 'Leave the room';
+        iframeCloseButton.style.position = 'absolute';
+        iframeCloseButton.style.top = '10px';
+        iframeCloseButton.style.right = '15em';
+        iframeCloseButton.style.backgroundColor = '#0D3868';
+        iframeCloseButton.style.color = '#fff';
+        iframeCloseButton.style.padding = '10px';
+        iframeCloseButton.style.border = 'none';
+        iframeCloseButton.style.borderRadius = '5px';
+        iframeCloseButton.style.cursor = 'pointer';
+        iframeCloseButton.style.borderRadius = '9px';
+        iframe.style.width = '100%';
+        iframe.style.height = '100vh';
+        iframe.style.border = 'none';
+        iframe.allow = "camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;";
+        iframe.allowFullscreen = true;
+
+        iframeCloseButton.addEventListener('click', () => {
+          iframeContainer.remove();
+        });
+
+        iframeContainer.appendChild(iframeCloseButton);
+        iframeContainer.appendChild(iframe);
+        document.body.appendChild(iframeContainer);
+      });
+
+
+      closeModalBtn.style.position = 'absolute';
+      closeModalBtn.style.top = '10px';
+      closeModalBtn.style.right = '10px';
+
+      popupModal.style.display = 'flex';
+      popupModal.style.justifyContent = 'center';
+      popupModal.style.alignItems = 'center';
+      popupModal.style.position = 'fixed';
+      popupModal.style.top = '50%';
+      popupModal.style.left = '50%';
+      popupModal.style.transform = 'translate(-50%, -50%)';
+      popupModal.style.width = '30%';
+      popupModal.style.height = '30%';
+      popupModal.style.backgroundColor = '#fff';
+      popupModal.style.zIndex = '1';
+      popupModal.style.borderRadius = '9px';
+      popupModal.style.boxShadow = '0 0 15px rgba(0, 0, 0, 0.1)';
+      popupModal.style.padding = '20px';
+      popupModal.style.textAlign = 'center';
+      popupModal.style.flexDirection = 'column';
+      const popupButtons = popupModal.querySelectorAll('button');
+      popupButtons.forEach(button => {
+        button.style.cursor = 'pointer';
+      });
+      // Close the popupModal when clicking outside of it
+      document.addEventListener('click', (event) => {
+        if (!popupModal.contains(event.target)) {
+          popupModal.remove();
+        }
+      });
+
+
+
+    }
     const {
       conversation: { last_activity_at: lastActivityAt },
       conversation_id: conversationId,

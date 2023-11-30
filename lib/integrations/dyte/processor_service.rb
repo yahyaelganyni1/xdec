@@ -19,6 +19,7 @@ class Integrations::Dyte::ProcessorService
   private
 
   def create_a_dyte_integration_message(meeting, title, agent)
+    # dyte is created here as a message
     @conversation.messages.create!(
       {
         account_id: conversation.account_id,

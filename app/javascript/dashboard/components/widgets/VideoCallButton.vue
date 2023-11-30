@@ -1,16 +1,6 @@
 <template>
-  <woot-button
-    v-if="isVideoIntegrationEnabled"
-    v-tooltip.top-end="
-      $t('INTEGRATION_SETTINGS.DYTE.START_VIDEO_CALL_HELP_TEXT')
-    "
-    icon="video"
-    :is-loading="isLoading"
-    color-scheme="secondary"
-    variant="smooth"
-    size="small"
-    @click="onClick"
-  />
+  <woot-button v-if="isVideoIntegrationEnabled" v-tooltip.top-end="$t('INTEGRATION_SETTINGS.DYTE.START_VIDEO_CALL_HELP_TEXT')
+    " icon="video" :is-loading="isLoading" color-scheme="secondary" variant="smooth" size="small" @click="onClick" />
 </template>
 <script>
 import { mapGetters } from 'vuex';

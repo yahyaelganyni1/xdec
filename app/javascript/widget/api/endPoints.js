@@ -38,6 +38,23 @@ const sendMessage = (content, replyTo) => {
   };
 };
 
+const sendJitsiMeeting = (content, replyTo) => {
+  const referrerURL = window.referrerURL || '';
+  const search = buildSearchParamsWithLocale(window.location.search);
+
+  return {
+    url: `/api/v1/widget/jitsi_calls${search}`,
+    params: {
+      message: {
+        content,
+        reply_to: replyTo,
+        timestamp: new Date().toString(),
+        referer_url: referrerURL,
+      },
+    },
+  };
+}
+
 const sendAttachment = ({ attachment, replyTo = null }) => {
   const { referrerURL = '' } = window;
   const timestamp = new Date().toString();
@@ -107,6 +124,7 @@ const getMostReadArticles = (slug, locale) => ({
 export default {
   createConversation,
   sendMessage,
+  sendJitsiMeeting,
   sendAttachment,
   getConversation,
   updateMessage,

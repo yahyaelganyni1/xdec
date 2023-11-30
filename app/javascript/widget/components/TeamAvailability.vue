@@ -5,8 +5,8 @@
         <div class="text-sm font-medium text-slate-700 dark:text-slate-50">
           {{
             isOnline
-              ? $t('TEAM_AVAILABILITY.ONLINE')
-              : $t('TEAM_AVAILABILITY.OFFLINE')
+            ? $t('TEAM_AVAILABILITY.ONLINE')
+            : $t('TEAM_AVAILABILITY.OFFLINE')
           }}
         </div>
         <div class="text-sm mt-1 text-slate-500 dark:text-slate-100">
@@ -17,18 +17,17 @@
     </div>
     <button
       class="inline-flex text-sm font-medium rounded-md py-1 mt-2 px-2 -ml-2 leading-6 text-slate-800 dark:text-slate-50 justify-between items-center hover:bg-slate-25 dark:hover:bg-slate-800"
-      :style="{ color: widgetColor }"
-      @click="startConversation"
-    >
+      :style="{ color: widgetColor }" @click="startConversation">
       <span class="pr-2 text-sm">
         {{
           hasConversation
-            ? $t('CONTINUE_CONVERSATION')
-            : $t('START_CONVERSATION')
+          ? $t('CONTINUE_CONVERSATION')
+          : $t('START_CONVERSATION')
         }}
       </span>
       <fluent-icon icon="arrow-right" size="14" />
     </button>
+    <JitsiCall />
   </div>
 </template>
 
@@ -42,18 +41,20 @@ import availabilityMixin from 'widget/mixins/availability';
 import FluentIcon from 'shared/components/FluentIcon/Index.vue';
 import { IFrameHelper } from 'widget/helpers/utils';
 import { CHATWOOT_ON_START_CONVERSATION } from '../constants/sdkEvents';
+import JitsiCall from './JitsiCall';
 
 export default {
   name: 'TeamAvailability',
   components: {
     AvailableAgents,
     FluentIcon,
+    JitsiCall,
   },
   mixins: [configMixin, nextAvailabilityTime, availabilityMixin],
   props: {
     availableAgents: {
       type: Array,
-      default: () => {},
+      default: () => { },
     },
     hasConversation: {
       type: Boolean,

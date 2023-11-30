@@ -5,6 +5,7 @@ module WebsiteTokenHelper
 
   def set_web_widget
     @web_widget = ::Channel::WebWidget.find_by!(website_token: permitted_params[:website_token])
+    p "@web_widget2: #{@web_widget.website_token}"
     @current_account = @web_widget.inbox.account
 
     render json: { error: 'Account is suspended' }, status: :unauthorized unless @current_account.active?

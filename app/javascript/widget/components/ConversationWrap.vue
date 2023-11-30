@@ -4,17 +4,9 @@
       <div v-if="isFetchingList" class="message--loader">
         <spinner />
       </div>
-      <div
-        v-for="groupedMessage in groupedMessages"
-        :key="groupedMessage.date"
-        class="messages-wrap"
-      >
+      <div v-for="groupedMessage in groupedMessages" :key="groupedMessage.date" class="messages-wrap">
         <date-separator :date="groupedMessage.date" />
-        <chat-message
-          v-for="message in groupedMessage.messages"
-          :key="message.id"
-          :message="message"
-        />
+        <chat-message v-for="message in groupedMessage.messages" :key="message.id" :message="message" />
       </div>
       <agent-typing-bubble v-if="showStatusIndicator" />
     </div>
@@ -132,6 +124,7 @@ export default {
   &.light-scheme {
     color-scheme: light;
   }
+
   &.dark-scheme {
     color-scheme: dark;
   }

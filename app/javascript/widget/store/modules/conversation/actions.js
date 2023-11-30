@@ -1,6 +1,7 @@
 import {
   createConversationAPI,
   sendMessageAPI,
+  sendJitsiMeetingAPI,
   getMessagesAPI,
   sendAttachmentAPI,
   toggleTyping,
@@ -40,6 +41,7 @@ export const actions = {
 
     commit('pushMessageToConversation', message);
     commit('updateMessageMeta', { id, meta: { ...meta, error: '' } });
+
     try {
       const { data } = await sendMessageAPI(content, replyTo);
 
@@ -57,6 +59,34 @@ export const actions = {
   setLastMessageId: async ({ commit }) => {
     commit('setLastMessageId');
   },
+
+  // changes: add sendJitsiMeeting
+  sendJitsiMeeting: async ({ dispatch }, params) => {
+    const { content, replyTo } = params;
+    const message = createTemporaryMessage({ content, replyTo });
+    dispatch('sendJitsiMeetingWithData', message);
+  },
+
+  // changes: add sendJitsiMeetingWithData
+  sendJitsiMeetingWithData: async ({ commit }, message) => {
+    const { id, content, replyTo, meta = {} } = message;
+
+    commit('pushMessageToConversation', message);
+    commit('updateMessageMeta', { id, meta: { ...meta, error: '' } });
+    try {
+      const { data } = await sendJitsiMeetingAPI(content, replyTo);
+
+      commit('deleteMessage', message.id);
+      commit('pushMessageToConversation', { ...data, status: 'sent' });
+    } catch (error) {
+      commit('pushMessageToConversation', { ...message, status: 'failed' });
+      commit('updateMessageMeta', {
+        id,
+        meta: { ...meta, error: '' },
+      });
+    }
+  },
+
 
   sendAttachment: async ({ commit }, params) => {
     const {

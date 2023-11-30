@@ -81,6 +81,7 @@ Rails.application.routes.draw do
               post :filter
             end
             scope module: :conversations do
+              resources :jitsi_meeting, only: [:index, :create]
               resources :messages, only: [:index, :create, :destroy] do
                 member do
                   post :translate
@@ -251,6 +252,7 @@ Rails.application.routes.draw do
         resources :campaigns, only: [:index]
         resources :events, only: [:create]
         resources :messages, only: [:index, :create, :update]
+        resources :jitsi_calls, only: [:index, :create]
         resources :conversations, only: [:index, :create] do
           collection do
             post :destroy_custom_attributes

@@ -1,21 +1,11 @@
 <template>
   <div class="flex flex-col justify-between flex-grow h-full min-w-0 m-0">
-    <banner
-      v-if="!currentChat.can_reply"
-      color-scheme="alert"
-      :banner-message="replyWindowBannerMessage"
-      :href-link="replyWindowLink"
-      :href-link-text="replyWindowLinkText"
-    />
+    <banner v-if="!currentChat.can_reply" color-scheme="alert" :banner-message="replyWindowBannerMessage"
+      :href-link="replyWindowLink" :href-link-text="replyWindowLinkText" />
     <div class="flex justify-end">
-      <woot-button
-        variant="smooth"
-        size="tiny"
-        color-scheme="secondary"
+      <woot-button variant="smooth" size="tiny" color-scheme="secondary"
         class="rounded-bl-calc rtl:rotate-180 rounded-tl-calc fixed top-[9.5rem] md:top-[6.25rem] z-10 bg-white dark:bg-slate-700 border-slate-50 dark:border-slate-600 border-solid border border-r-0 box-border"
-        :icon="isRightOrLeftIcon"
-        @click="onToggleContactPanel"
-      />
+        :icon="isRightOrLeftIcon" @click="onToggleContactPanel" />
     </div>
     <ul class="conversation-panel">
       <transition name="slide-up">
@@ -23,66 +13,36 @@
           <span v-if="shouldShowSpinner" class="spinner message" />
         </li>
       </transition>
-      <message
-        v-for="message in getReadMessages"
-        :key="message.id"
-        class="message--read ph-no-capture"
-        data-clarity-mask="True"
-        :data="message"
-        :is-a-tweet="isATweet"
-        :is-a-whatsapp-channel="isAWhatsAppChannel"
-        :is-web-widget-inbox="isAWebWidgetInbox"
-        :inbox-supports-reply-to="inboxSupportsReplyTo"
-        :in-reply-to="getInReplyToMessage(message)"
-      />
+      <message v-for="message in getReadMessages" :key="message.id" class="message--read ph-no-capture"
+        data-clarity-mask="True" :data="message" :is-a-tweet="isATweet" :is-a-whatsapp-channel="isAWhatsAppChannel"
+        :is-web-widget-inbox="isAWebWidgetInbox" :inbox-supports-reply-to="inboxSupportsReplyTo"
+        :in-reply-to="getInReplyToMessage(message)" />
       <li v-show="unreadMessageCount != 0" class="unread--toast">
         <span>
           {{ unreadMessageCount > 9 ? '9+' : unreadMessageCount }}
           {{
             unreadMessageCount > 1
-              ? $t('CONVERSATION.UNREAD_MESSAGES')
-              : $t('CONVERSATION.UNREAD_MESSAGE')
+            ? $t('CONVERSATION.UNREAD_MESSAGES')
+            : $t('CONVERSATION.UNREAD_MESSAGE')
           }}
         </span>
       </li>
-      <message
-        v-for="message in getUnReadMessages"
-        :key="message.id"
-        class="message--unread ph-no-capture"
-        data-clarity-mask="True"
-        :data="message"
-        :is-a-tweet="isATweet"
-        :is-a-whatsapp-channel="isAWhatsAppChannel"
-        :is-web-widget-inbox="isAWebWidgetInbox"
-        :inbox-supports-reply-to="inboxSupportsReplyTo"
-        :in-reply-to="getInReplyToMessage(message)"
-      />
-      <conversation-label-suggestion
-        v-if="shouldShowLabelSuggestions"
-        :suggested-labels="labelSuggestions"
-        :chat-labels="currentChat.labels"
-        :conversation-id="currentChat.id"
-      />
+      <message v-for="message in getUnReadMessages" :key="message.id" class="message--unread ph-no-capture"
+        data-clarity-mask="True" :data="message" :is-a-tweet="isATweet" :is-a-whatsapp-channel="isAWhatsAppChannel"
+        :is-web-widget-inbox="isAWebWidgetInbox" :inbox-supports-reply-to="inboxSupportsReplyTo"
+        :in-reply-to="getInReplyToMessage(message)" />
+      <conversation-label-suggestion v-if="shouldShowLabelSuggestions" :suggested-labels="labelSuggestions"
+        :chat-labels="currentChat.labels" :conversation-id="currentChat.id" />
     </ul>
-    <div
-      class="conversation-footer"
-      :class="{ 'modal-mask': isPopoutReplyBox }"
-    >
+    <div class="conversation-footer" :class="{ 'modal-mask': isPopoutReplyBox }">
       <div v-if="isAnyoneTyping" class="typing-indicator-wrap">
         <div class="typing-indicator">
           {{ typingUserNames }}
-          <img
-            class="gif"
-            src="~dashboard/assets/images/typing.gif"
-            alt="Someone is typing"
-          />
+          <img class="gif" src="~dashboard/assets/images/typing.gif" alt="Someone is typing" />
         </div>
       </div>
-      <reply-box
-        :conversation-id="currentChat.id"
-        :popout-reply-box.sync="isPopoutReplyBox"
-        @click="showPopoutReplyBox"
-      />
+      <reply-box :conversation-id="currentChat.id" :popout-reply-box.sync="isPopoutReplyBox"
+        @click="showPopoutReplyBox" />
     </div>
   </div>
 </template>
@@ -526,6 +486,7 @@ export default {
 
 <style scoped>
 @tailwind components;
+
 @layer components {
   .rounded-bl-calc {
     border-bottom-left-radius: calc(1.5rem + 1px);

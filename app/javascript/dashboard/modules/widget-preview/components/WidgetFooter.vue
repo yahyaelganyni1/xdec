@@ -1,22 +1,13 @@
 <template>
   <div class="footer-wrap">
-    <custom-button
-      v-if="config.isDefaultScreen"
-      class="start-conversation"
-      :style="{ background: config.color }"
-    >
+    <custom-button v-if="config.isDefaultScreen" class="start-conversation" :style="{ background: config.color }">
       {{
         $t('INBOX_MGMT.WIDGET_BUILDER.FOOTER.START_CONVERSATION_BUTTON_TEXT')
       }}
     </custom-button>
     <div v-else class="chat-message-input is-focused">
-      <resizable-text-area
-        id="chat-input"
-        :placeholder="
-          $t('INBOX_MGMT.WIDGET_BUILDER.FOOTER.CHAT_INPUT_PLACEHOLDER')
-        "
-        class="user-message-input is-focused"
-      />
+      <resizable-text-area id="chat-input" :placeholder="$t('INBOX_MGMT.WIDGET_BUILDER.FOOTER.CHAT_INPUT_PLACEHOLDER')
+          " class="user-message-input is-focused" />
       <div class="button-wrap">
         <fluent-icon icon="emoji" />
         <fluent-icon class="icon-send" icon="send" />
@@ -37,7 +28,7 @@ export default {
   props: {
     config: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
   },
 };
@@ -45,6 +36,7 @@ export default {
 
 <style scoped lang="scss">
 @import '~dashboard/assets/scss/variables.scss';
+
 .footer-wrap {
   width: 100%;
   display: flex;
@@ -64,8 +56,7 @@ export default {
   .chat-message-input {
     align-items: center;
     display: flex;
-    padding: var(--space-zero) var(--space-small) var(--space-zero)
-      var(--space-slab);
+    padding: var(--space-zero) var(--space-small) var(--space-zero) var(--space-slab);
     border-radius: var(--border-radius-normal);
     background: white;
 
