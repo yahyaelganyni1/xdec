@@ -19,8 +19,6 @@ class BaseActionCableConnector {
       },
       {
         updatePresence() {
-          console.log('BaseActionCableConnector fired');
-
           this.perform('update_presence');
         },
         received: this.onReceived,
@@ -74,10 +72,10 @@ class BaseActionCableConnector {
   };
 
   // eslint-disable-next-line class-methods-use-this
-  onReconnect = () => { };
+  onReconnect = () => {};
 
   // eslint-disable-next-line class-methods-use-this
-  onDisconnected = () => { };
+  onDisconnected = () => {};
 
   disconnect() {
     this.consumer.disconnect();

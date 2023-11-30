@@ -87,7 +87,6 @@ export const actions = {
     }
   },
 
-
   sendAttachment: async ({ commit }, params) => {
     const {
       attachment: { thumbUrl, fileType },

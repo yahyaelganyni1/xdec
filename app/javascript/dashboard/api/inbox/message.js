@@ -45,7 +45,6 @@ export const buildCreatePayload = ({
       template_params: templateParams,
     };
   }
-  console.log('payload', payload);
   return payload;
 };
 

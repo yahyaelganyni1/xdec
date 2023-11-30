@@ -18,7 +18,6 @@ export const verifyServiceWorkerExistence = (callback = () => {}) => {
     .then(registration => callback(registration))
     .catch(registrationError => {
       // eslint-disable-next-line
-      console.log('SW registration failed: ', registrationError);
     });
 };
 

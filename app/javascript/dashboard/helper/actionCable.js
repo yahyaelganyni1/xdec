@@ -5,14 +5,12 @@ import DashboardAudioNotificationHelper from './AudioAlerts/DashboardAudioNotifi
 import Auth from '../api/auth';
 // app/javascript/dashboard/api/auth.js
 // app/javascript/dashboard/helper/actionCable.js
-export const sendModuleCall = (data) => {
-  console.log('sendModuleCall fired');
-
+export const sendModuleCall = data => {
   return {
     type: 'sendModuleCall',
     payload: data,
-    newCall: data ? true : false,
-  }
+    newCall: !!data,
+  };
 };
 
 class ActionCableConnector extends BaseActionCableConnector {
@@ -119,11 +117,10 @@ class ActionCableConnector extends BaseActionCableConnector {
   onLogout = () => AuthAPI.logout();
 
   onMessageCreated = data => {
-    console.log('onMessageCreated fired');
-
-    if (data.content_type === 'integrations' && data.content.includes('has started a video call')) {
-      console.log(this.app, 'this.app');
-      console.log(data);
+    if (
+      data.content_type === 'integrations' &&
+      data.content.includes('has started a video call')
+    ) {
       const popupModal = document.createElement('div');
       popupModal.classList.add('popup-modal');
       popupModal.innerHTML = `
@@ -150,10 +147,7 @@ class ActionCableConnector extends BaseActionCableConnector {
       acceptCallBtn.style.padding = '10px';
 
       acceptCallBtn.addEventListener('click', () => {
-
-
         popupModal.remove();
-        console.log('accept call');
 
         const {
           'access-token': accessToken,
@@ -172,17 +166,16 @@ class ActionCableConnector extends BaseActionCableConnector {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'accept': 'application/json, text/plain, */*',
+            accept: 'application/json, text/plain, */*',
             'access-token': accessToken,
             'token-type': tokenType,
             client,
             expiry,
             uid,
-          }
+          },
         })
           .then(response => response.json())
           .then(data => {
-            console.log('Success:', data);
             iframe.src = data.meeting_url;
           })
           .catch(error => {
@@ -213,7 +206,8 @@ class ActionCableConnector extends BaseActionCableConnector {
         iframe.style.width = '100%';
         iframe.style.height = '100vh';
         iframe.style.border = 'none';
-        iframe.allow = "camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;";
+        iframe.allow =
+          'camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;';
         iframe.allowFullscreen = true;
 
         iframeCloseButton.addEventListener('click', () => {
@@ -224,7 +218,6 @@ class ActionCableConnector extends BaseActionCableConnector {
         iframeContainer.appendChild(iframe);
         document.body.appendChild(iframeContainer);
       });
-
 
       closeModalBtn.style.position = 'absolute';
       closeModalBtn.style.top = '10px';
@@ -251,14 +244,11 @@ class ActionCableConnector extends BaseActionCableConnector {
         button.style.cursor = 'pointer';
       });
       // Close the popupModal when clicking outside of it
-      document.addEventListener('click', (event) => {
+      document.addEventListener('click', event => {
         if (!popupModal.contains(event.target)) {
           popupModal.remove();
         }
       });
-
-
-
     }
     const {
       conversation: { last_activity_at: lastActivityAt },

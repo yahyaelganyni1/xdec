@@ -20,7 +20,6 @@ class DyteAPI extends ApiClient {
   }
 
   addParticipantToMeeting(messageId) {
-    console.log('add participant to meeting url: ', this.url);
     return axios.post(`${this.url}/add_participant_to_meeting`, {
       message_id: messageId,
     });

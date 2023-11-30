@@ -5,6 +5,6 @@ export const buildDyteURL = (roomName, dyteAuthToken) => {
   return `${DYTE_MEETING_LINK}${roomName}?authToken=${dyteAuthToken}&showSetupScreen=true&disableVideoBackground=true`;
 };
 
-export const buildJitsiURL = (roomName) => {
+export const buildJitsiURL = roomName => {
   return `${JITSI_MEETING_LINK}${roomName}`;
-}
+};

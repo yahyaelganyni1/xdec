@@ -51,7 +51,6 @@ export default {
     createModule() {
       const inComingCallResult = sendModuleCall();
       this.inComingCall = inComingCallResult;
-      console.log(this.inComingCall, "inComingCall1")
     },
     async joinTheCall() {
       this.isLoading = true;

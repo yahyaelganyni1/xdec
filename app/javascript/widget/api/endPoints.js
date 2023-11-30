@@ -53,7 +53,7 @@ const sendJitsiMeeting = (content, replyTo) => {
       },
     },
   };
-}
+};
 
 const sendAttachment = ({ attachment, replyTo = null }) => {
   const { referrerURL = '' } = window;

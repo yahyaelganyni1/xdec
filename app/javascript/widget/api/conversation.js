@@ -14,7 +14,7 @@ const sendMessageAPI = async (content, replyTo = null) => {
 const sendJitsiMeetingAPI = async (content, replyTo = null) => {
   const urlData = endPoints.sendJitsiMeeting(content, replyTo);
   return API.post(urlData.url, urlData.params);
-}
+};
 
 const sendAttachmentAPI = async (attachment, replyTo = null) => {
   const urlData = endPoints.sendAttachment(attachment, replyTo);
