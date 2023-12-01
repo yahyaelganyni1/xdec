@@ -14,7 +14,11 @@ class Api::V1::Accounts::Conversations::AssignmentsController < Api::V1::Account
 
   def set_agent
     @agent = Current.account.users.find_by(id: params[:assignee_id])
+    p '===set_agent=== @agent==='
+    p @agent
     @conversation.update_assignee(@agent)
+    p '===set_agent=== @conversation==='
+    p @conversation.inspect
     render_agent
   end
 

@@ -117,6 +117,8 @@ class ActionCableConnector extends BaseActionCableConnector {
   onLogout = () => AuthAPI.logout();
 
   onMessageCreated = data => {
+    console.log('data', data);
+    console.log('message was created')
     if (
       data.content_type === 'integrations' &&
       data.content.includes('has started a video call')

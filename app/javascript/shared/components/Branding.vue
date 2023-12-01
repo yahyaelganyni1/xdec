@@ -1,25 +1,28 @@
 <template>
-  <div
+  <div>
+    <!-- 
+    <div
     v-if="globalConfig.brandName && !disableBranding"
     class="px-0 py-3 flex justify-center"
-  >
+    >
     <a
-      :href="brandRedirectURL"
-      rel="noreferrer noopener nofollow"
+    :href="brandRedirectURL"
+    rel="noreferrer noopener nofollow"
       target="_blank"
       class="branding--link justify-center items-center leading-3"
     >
       <img
-        class="branding--image"
-        :alt="globalConfig.brandName"
-        :src="globalConfig.logoThumbnail"
+      class="branding--image"
+      :alt="globalConfig.brandName"
+      :src="globalConfig.logoThumbnail"
       />
       <span>
         {{ useInstallationName($t('POWERED_BY'), globalConfig.brandName) }}
       </span>
     </a>
   </div>
-  <div v-else class="p-3" />
+  <div v-else class="p-3" /> -->
+  </div>
 </template>
 
 <script>
@@ -52,9 +55,8 @@ export default {
     brandRedirectURL() {
       try {
         const referrerHost = this.$store.getters['appConfig/getReferrerHost'];
-        const baseURL = `${this.globalConfig.widgetBrandURL}?utm_source=${
-          referrerHost ? 'widget_branding' : 'survey_branding'
-        }`;
+        const baseURL = `${this.globalConfig.widgetBrandURL}?utm_source=${referrerHost ? 'widget_branding' : 'survey_branding'
+          }`;
         if (referrerHost) {
           return `${baseURL}&utm_referrer=${referrerHost}`;
         }

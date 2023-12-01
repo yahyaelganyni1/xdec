@@ -1,11 +1,7 @@
 <template>
   <div class="widget-preview-container">
     <div v-if="isWidgetVisible" class="screen-selector">
-      <input-radio-group
-        name="widget-screen"
-        :items="widgetScreens"
-        :action="handleScreenChange"
-      />
+      <input-radio-group name="widget-screen" :items="widgetScreens" :action="handleScreenChange" />
     </div>
     <div v-if="isWidgetVisible" class="widget-wrapper">
       <WidgetHead :config="getWidgetHeadConfig" />
@@ -13,7 +9,7 @@
         <WidgetBody :config="getWidgetBodyConfig" />
         <WidgetFooter :config="getWidgetFooterConfig" />
         <div class="branding">
-          <a class="branding-link">
+          <!-- <a class="branding-link">
             <img class="branding-image" :src="globalConfig.logoThumbnail" />
             <span>
               {{
@@ -23,22 +19,13 @@
                 )
               }}
             </span>
-          </a>
+          </a> -->
         </div>
       </div>
     </div>
     <div class="widget-bubble" :style="getBubblePositionStyle">
-      <button
-        class="bubble"
-        :class="getBubbleTypeClass"
-        :style="{ background: color }"
-        @click="toggleWidget"
-      >
-        <img
-          v-if="!isWidgetVisible"
-          src="~dashboard/assets/images/bubble-logo.svg"
-          alt=""
-        />
+      <button class="bubble" :class="getBubbleTypeClass" :style="{ background: color }" @click="toggleWidget">
+        <img v-if="!isWidgetVisible" src="~dashboard/assets/images/bubble-logo.svg" alt="" />
         <div>
           {{ getWidgetBubbleLauncherTitle }}
         </div>
@@ -247,6 +234,7 @@ export default {
     }
   }
 }
+
 .widget-bubble {
   display: flex;
   flex-direction: row;
@@ -265,8 +253,7 @@ export default {
 
     img {
       height: var(--space-medium);
-      margin: var(--space-one) var(--space-one) var(--space-one)
-        var(--space-two);
+      margin: var(--space-one) var(--space-one) var(--space-one) var(--space-two);
       width: var(--space-medium);
     }
 

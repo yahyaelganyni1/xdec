@@ -1,7 +1,7 @@
 <template>
   <div class="columns onboarding-wrap">
     <div class="onboarding">
-      <div class="scroll-wrap">
+      <!-- <div class="scroll-wrap">
         <div class="features-item">
           <h1 class="page-title">
             <span>{{
@@ -74,7 +74,7 @@
             {{ $t('ONBOARDING.LABELS.NEW_LINK') }}
           </router-link>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -106,6 +106,7 @@ export default {
   overflow: auto;
   text-align: left;
 }
+
 .onboarding {
   height: 100vh;
   overflow: auto;

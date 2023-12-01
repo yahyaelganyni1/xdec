@@ -1,7 +1,7 @@
 <template>
   <div class="w-8 h-8">
     <router-link :to="dashboardPath" replace>
-      <img :src="source" :alt="name" />
+      <img src="/xDEC.png" :alt="name" />
     </router-link>
   </div>
 </template>

@@ -1,9 +1,9 @@
 # if you dont specify locked attribute, the default value will be true
 # which means the particular config will be locked
 - name: INSTALLATION_NAME
-  value: 'Chatwoot'
+  value: 'X-DEC'
 - name: LOGO_THUMBNAIL
-  value: '/brand-assets/logo_thumbnail.svg'
+  value: '/xDEC.png'
 - name: LOGO
   value: '/brand-assets/logo.svg'
 - name: BRAND_URL
@@ -73,4 +73,4 @@
 - name: CSML_EDITOR_HOST
   value:
 - name: LOGO_DARK
-  value: '/brand-assets/logo_dark.svg'
+  value: '/xDEC.png'

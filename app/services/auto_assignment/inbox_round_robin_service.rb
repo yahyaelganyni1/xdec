@@ -1,6 +1,6 @@
 class AutoAssignment::InboxRoundRobinService
   pattr_initialize [:inbox!]
-
+  p 'auto_assignment/inbox_round_robin_service.rb'
   # called on inbox delete
   def clear_queue
     ::Redis::Alfred.delete(round_robin_key)
