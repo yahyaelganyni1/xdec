@@ -43,6 +43,11 @@ export default {
                 const urlLocation = window.location.href;
                 const xAuthToken = window.authToken;
                 const url = `${baseUrl}/api/v1/widget/jitsi_calls${search}`;
+                console.log('url', url)
+                console.log('urlLocation', urlLocation)
+                console.log('xAuthToken', xAuthToken)
+                console.log('search', search)
+                console.log('baseUrl', baseUrl)
                 fetch(url, {
                     "headers": {
                         "accept": "application/json, text/plain, */*",
