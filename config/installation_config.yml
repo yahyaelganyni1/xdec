@@ -5,7 +5,7 @@
 - name: LOGO_THUMBNAIL
   value: '/xDEC.png'
 - name: LOGO
-  value: '/brand-assets/logo.svg'
+  value: '/xDEC.png'
 - name: BRAND_URL
   value: 'https://www.chatwoot.com'
 - name: WIDGET_BRAND_URL
