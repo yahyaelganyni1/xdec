@@ -116,6 +116,3 @@ If you need help or just want to hang out, come, say hi on our [Discord](https:/
 Thanks goes to all these [wonderful people](https://www.chatwoot.com/docs/contributors):
 
 <a href="https://github.com/chatwoot/chatwoot/graphs/contributors"><img src="https://opencollective.com/chatwoot/contributors.svg?width=890&button=false" /></a>
-
-
-*Chatwoot* &copy; 2017-2023, Chatwoot Inc - Released under the MIT License.

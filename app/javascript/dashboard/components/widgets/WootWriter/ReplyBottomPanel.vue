@@ -1,8 +1,6 @@
 <template>
   <div class="bottom-box" :class="wrapClass">
     <div class="left-wrap">
-      <!-- changes: jitsi-meet button -->
-      <jitsi-call-button v-if="(isAWebWidgetInbox || isAPIInbox) && !isOnPrivateNote" :conversation-id="conversationId" />
       <woot-button v-tooltip.top-end="$t('CONVERSATION.REPLYBOX.TIP_EMOJI_ICON')"
         :title="$t('CONVERSATION.REPLYBOX.TIP_EMOJI_ICON')" icon="emoji" emoji="😊" color-scheme="secondary"
         variant="smooth" size="small" @click="toggleEmojiPicker" />

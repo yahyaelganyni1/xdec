@@ -14,8 +14,7 @@
   </div>
 </template>
 <script>
-import DyteAPI from 'dashboard/api/integrations/dyte';
-import { buildDyteURL, buildJitsiURL } from 'shared/helpers/IntegrationHelper';
+import { buildJitsiURL } from 'shared/helpers/IntegrationHelper';
 import alertMixin from 'shared/mixins/alertMixin';
 import Auth from '../../../../../api/auth';
 import { sendModuleCall } from '../../../../../helper/actionCable'
@@ -95,9 +94,6 @@ export default {
       this.meetingUrl = '';
     },
   },
-  // mounted() {
-  //   this.createModule();
-  // },
 };
 </script>
 <style lang="scss">

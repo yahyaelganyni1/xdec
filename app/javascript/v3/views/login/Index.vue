@@ -4,7 +4,7 @@
       <img src="/xDEC.png" alt="x-dec" class="mx-auto h-8 w-auto block dark:hidden" />
       <img v-if="globalConfig.logoDark" src="/xDEC.png" alt="x-dec" class="mx-auto h-8 w-auto hidden dark:block" />
       <h2 class="mt-6 text-center text-3xl font-medium text-slate-900 dark:text-woot-50">
-        Login to X-DEC
+        Login to DEP
       </h2>
       <p v-if="showSignupLink" class="mt-3 text-center text-sm text-slate-600 dark:text-slate-400">
         {{ $t('COMMON.OR') }}
