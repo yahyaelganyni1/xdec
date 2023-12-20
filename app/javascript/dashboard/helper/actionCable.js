@@ -116,13 +116,21 @@ class ActionCableConnector extends BaseActionCableConnector {
   // eslint-disable-next-line class-methods-use-this
   onLogout = () => AuthAPI.logout();
 
+
   onMessageCreated = data => {
     console.log('data', data);
     console.log('message was created')
+
     if (
       data.content_type === 'integrations' &&
       data.content.includes('has started a video call')
     ) {
+
+      const audio = new Audio('/hangouts_video_call.mp3');
+
+      audio.loop = true;
+      audio.play();
+
       const popupModal = document.createElement('div');
       popupModal.classList.add('popup-modal');
       popupModal.innerHTML = `
@@ -134,10 +142,13 @@ class ActionCableConnector extends BaseActionCableConnector {
           <button id="closeModalBtn">X</button>
         </div>
       `;
+
+
       document.body.appendChild(popupModal);
       const closeModalBtn = document.getElementById('closeModalBtn');
       closeModalBtn.addEventListener('click', () => {
         popupModal.remove();
+        audio.pause();
       });
 
       const acceptCallBtn = document.getElementById('acceptCallBtn');
@@ -150,7 +161,7 @@ class ActionCableConnector extends BaseActionCableConnector {
 
       acceptCallBtn.addEventListener('click', () => {
         popupModal.remove();
-
+        audio.pause();
         const {
           'access-token': accessToken,
           'token-type': tokenType,
@@ -163,6 +174,7 @@ class ActionCableConnector extends BaseActionCableConnector {
         const conversationId = data.conversation_id;
         const fullUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting`;
         const iframe = document.createElement('iframe');
+
 
         fetch(fullUrl, {
           method: 'GET',
@@ -179,9 +191,11 @@ class ActionCableConnector extends BaseActionCableConnector {
           .then(response => response.json())
           .then(data => {
             iframe.src = data.meeting_url;
+            audio.pause();
           })
           .catch(error => {
             console.error('Error:', error);
+            audio.pause();
           });
 
         const iframeContainer = document.createElement('div');
@@ -249,6 +263,7 @@ class ActionCableConnector extends BaseActionCableConnector {
       document.addEventListener('click', event => {
         if (!popupModal.contains(event.target)) {
           popupModal.remove();
+          audio.pause();
         }
       });
     }

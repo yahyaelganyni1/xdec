@@ -1,6 +1,7 @@
 <template>
     <div>
-        <button class="join-call-button" :is-loading="isLoading" @click="joinTheCall">
+        <button class="join-call-button" :is-loading="isLoading" @click="joinTheCall"
+            :style="{ backgroundColor: this.widgetColor }">
             <fluent-icon icon="video-add" class="join-call-button__icon" />
             Start Video Call
         </button>
@@ -31,7 +32,12 @@ export default {
         meetingData: {
             type: Object,
             default: () => ({}),
+
         },
+        widgetColor: {
+            type: String,
+        },
+
     },
     data() {
         return { isLoading: false, dyteAuthToken: '', isSDKMounted: false, isOpen: false, meetingUrl: '' };
@@ -45,6 +51,7 @@ export default {
 
         async joinTheCall() {
             this.isLoading = true;
+            console.log('this.meetingData====', this.meetingData);
             try {
                 const search = buildSearchParamsWithLocale(window.location.search);
                 const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
@@ -53,7 +60,7 @@ export default {
                 const url = `${baseUrl}/api/v1/widget/jitsi_calls${search}`;
                 const os = navigator.platform.split(' ')[0];
 
-                console.log('os====', os);
+                console.log('widgetColor====', this.widgetColor);
 
                 fetch(url, {
                     "headers": {
@@ -95,7 +102,7 @@ export default {
     color: #fff;
     margin: var(--space-small) 0;
     cursor: pointer;
-    background-color: #1f93ff;
+    //background-color: #1f93ff;
     padding: .5em 1em;
     border-radius: 9px;
 }
