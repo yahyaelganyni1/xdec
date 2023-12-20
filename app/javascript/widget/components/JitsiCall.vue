@@ -42,6 +42,7 @@ export default {
         },
     },
     methods: {
+
         async joinTheCall() {
             this.isLoading = true;
             try {
@@ -50,11 +51,10 @@ export default {
                 const urlLocation = window.location.href;
                 const xAuthToken = window.authToken;
                 const url = `${baseUrl}/api/v1/widget/jitsi_calls${search}`;
-                console.log('url', url)
-                console.log('urlLocation', urlLocation)
-                console.log('xAuthToken', xAuthToken)
-                console.log('search', search)
-                console.log('baseUrl', baseUrl)
+                const os = navigator.platform.split(' ')[0];
+
+                console.log('os====', os);
+
                 fetch(url, {
                     "headers": {
                         "accept": "application/json, text/plain, */*",
@@ -62,7 +62,7 @@ export default {
                         "content-type": "application/json",
                         "sec-ch-ua": "\"Google Chrome\";v=\"119\", \"Chromium\";v=\"119\", \"Not?A_Brand\";v=\"24\"",
                         "sec-ch-ua-mobile": "?0",
-                        "sec-ch-ua-platform": "\"Linux\"",
+                        "sec-ch-ua-platform": `"${os}"`,
                         "sec-fetch-dest": "empty",
                         "sec-fetch-mode": "cors",
                         "sec-fetch-site": "same-origin",
