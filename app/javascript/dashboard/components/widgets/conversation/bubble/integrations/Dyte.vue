@@ -19,8 +19,6 @@ import alertMixin from 'shared/mixins/alertMixin';
 import Auth from '../../../../../api/auth';
 import { sendModuleCall } from '../../../../../helper/actionCable'
 
-// app/javascript/dashboard/helper/actionCable.js
-// app/javascript/dashboard/components/widgets/conversation/bubble/integrations/Dyte.vue
 
 export default {
   mixins: [alertMixin],

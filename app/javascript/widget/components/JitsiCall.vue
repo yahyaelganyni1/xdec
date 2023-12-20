@@ -1,6 +1,7 @@
 <template>
     <div>
         <button class="join-call-button" :is-loading="isLoading" @click="joinTheCall">
+            <fluent-icon icon="video-add" class="join-call-button__icon" />
             Start Video Call
         </button>
         <div v-if="isOpen" class="video-call--container">
@@ -16,9 +17,15 @@
 import { buildDyteURL } from 'shared/helpers/IntegrationHelper';
 import alertMixin from 'shared/mixins/alertMixin';
 import { buildSearchParamsWithLocale } from '../helpers/urlParamsHelper'
+import FluentIcon from '../../shared/components/FluentIcon/DashboardIcon.vue'
+// app/javascript/shared/components/FluentIcon/DashboardIcon.vue
+// app/javascript/widget/components/JitsiCall.vue
 
 export default {
     name: 'JitsiCall',
+    components: {
+        FluentIcon,
+    },
     mixins: [alertMixin],
     props: {
         meetingData: {
@@ -85,11 +92,17 @@ export default {
 </script>
 <style lang="scss">
 .join-call-button {
+    color: #fff;
     margin: var(--space-small) 0;
     cursor: pointer;
-    background-color: rgb(35, 174, 233)255;
-    color: rgb(19, 18, 18);
+    background-color: #1f93ff;
+    padding: .5em 1em;
     border-radius: 9px;
+}
+
+.join-call-button__icon {
+    display: inline-block;
+    margin-right: 0.5em;
 }
 
 .video-call--container {
