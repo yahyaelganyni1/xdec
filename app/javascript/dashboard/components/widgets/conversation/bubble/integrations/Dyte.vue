@@ -97,6 +97,7 @@ export default {
 <style lang="scss">
 .join-call-button {
   margin: var(--space-small) 0;
+  background-color: #369EFF !important;
 }
 
 .video-call--container {
