@@ -98,6 +98,7 @@ export default {
 .join-call-button {
   margin: var(--space-small) 0;
   background-color: #369EFF !important;
+  color: #fff !important;
 }
 
 .video-call--container {

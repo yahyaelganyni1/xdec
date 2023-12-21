@@ -120,10 +120,13 @@ class ActionCableConnector extends BaseActionCableConnector {
   onMessageCreated = data => {
     console.log('data', data);
     console.log('message was created')
-
+    const popupModalClass = document.querySelector('.popup-modal');
+    const openIframes = document.querySelectorAll('iframe');
     if (
       data.content_type === 'integrations' &&
-      data.content.includes('has started a video call')
+      data.content.includes('has started a video call') &&
+      !popupModalClass &&
+      openIframes.length === 0
     ) {
 
       const audio = new Audio('/hangouts_video_call.mp3');
@@ -174,6 +177,7 @@ class ActionCableConnector extends BaseActionCableConnector {
         const conversationId = data.conversation_id;
         const fullUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting`;
         const iframe = document.createElement('iframe');
+        iframe.classList.add('video-call-iframe');
 
 
         fetch(fullUrl, {
