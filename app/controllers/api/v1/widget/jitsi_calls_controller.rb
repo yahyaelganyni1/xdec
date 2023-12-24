@@ -1,6 +1,6 @@
-class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
+class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # rubocop:disable Layout/EndOfLine
   before_action :set_conversation, only: [:create, :index]
-  before_action :set_message, only: [:update]
+  before_action :set_message, only: [:update] # rubocop:disable Rails/LexicallyScopedActionFilter
   include JitsiMeetingLink
 
   JITSI_SERVER_URL = 'https://jitsi.xdec.io/'.freeze
@@ -18,13 +18,14 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
         ),
         'contact_name': conversation.contact.name,
         'conversation_id': conversation.display_id,
-        'contact_email': conversation.contact.email
+        'contact_email': conversation.contact.email,
+        'assignee_id': conversation.assignee_id
       }
 
     }, status: :ok
   end
 
-  def create
+  def create # rubocop:disable Metrics/MethodLength
     @conversation.messages.create!({
                                      content: "#{@conversation.contact.name} has started a video call",
                                      content_type: :integrations,
@@ -42,7 +43,9 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
     render json: {
       'message': {
         'conversation_id': @conversation.display_id,
-        'meeting_url': meeting_url(@conversation.inbox_id, @conversation.contact.email, @conversation.display_id, @conversation.contact.name)
+        'meeting_url': meeting_url(@conversation.inbox_id, @conversation.contact.email, @conversation.display_id, @conversation.contact.name),
+        'assignee_id': conversation.assignee_id,
+        'agent_name': conversation.assignee&.name
       }
     }, status: :ok
   end
