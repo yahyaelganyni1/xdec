@@ -118,8 +118,7 @@ class ActionCableConnector extends BaseActionCableConnector {
 
 
   onMessageCreated = data => {
-    console.log('data', data);
-    console.log('message was created')
+
     const popupModalClass = document.querySelector('.popup-modal');
     const openIframes = document.querySelectorAll('iframe');
     if (
@@ -155,6 +154,7 @@ class ActionCableConnector extends BaseActionCableConnector {
       });
 
       const acceptCallBtn = document.getElementById('acceptCallBtn');
+
       acceptCallBtn.style.cursor = 'pointer';
       acceptCallBtn.style.marginRight = '10px';
       acceptCallBtn.style.marginLeft = '10px';
