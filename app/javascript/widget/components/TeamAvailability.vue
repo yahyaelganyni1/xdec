@@ -27,7 +27,7 @@
       </span>
       <fluent-icon icon="arrow-right" size="14" />
     </button>
-    <JitsiCall :widgetColor="this.widgetColor" />
+    <JitsiCall :widgetColor="this.widgetColor" :from-the-input="false" />
   </div>
 </template>
 

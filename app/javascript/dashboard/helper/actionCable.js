@@ -141,7 +141,7 @@ class ActionCableConnector extends BaseActionCableConnector {
             incoming call from ${data.content.split(' ')[0]}
           </p>
           <button id="acceptCallBtn">Accept</button>
-          <button id="closeModalBtn">X</button>
+          <button id="closeModalBtn" title="cancel call">X</button>
         </div>
       `;
 
@@ -161,6 +161,7 @@ class ActionCableConnector extends BaseActionCableConnector {
       acceptCallBtn.style.backgroundColor = '#0D3868';
       acceptCallBtn.style.color = '#fff';
       acceptCallBtn.style.padding = '10px';
+      acceptCallBtn.style.borderRadius = '5px';
 
       acceptCallBtn.addEventListener('click', () => {
         popupModal.remove();
@@ -242,6 +243,10 @@ class ActionCableConnector extends BaseActionCableConnector {
       closeModalBtn.style.position = 'absolute';
       closeModalBtn.style.top = '10px';
       closeModalBtn.style.right = '10px';
+      closeModalBtn.style.backgroundColor = '#0D3868';
+      closeModalBtn.style.color = '#fff';
+      closeModalBtn.style.padding = '10px';
+      closeModalBtn.style.borderRadius = '5px';
 
       popupModal.style.display = 'flex';
       popupModal.style.justifyContent = 'center';
@@ -250,8 +255,8 @@ class ActionCableConnector extends BaseActionCableConnector {
       popupModal.style.top = '50%';
       popupModal.style.left = '50%';
       popupModal.style.transform = 'translate(-50%, -50%)';
-      popupModal.style.width = '30%';
-      popupModal.style.height = '30%';
+      popupModal.style.width = '50%';
+      popupModal.style.height = '40%';
       popupModal.style.backgroundColor = '#fff';
       popupModal.style.zIndex = '1';
       popupModal.style.borderRadius = '9px';

@@ -14,6 +14,7 @@
       <emoji-input v-if="showEmojiPicker" v-on-clickaway="hideEmojiPicker" :on-click="emojiOnClick"
         @keydown.esc="hideEmojiPicker" />
       <chat-send-button v-if="showSendButton" :on-click="handleButtonClick" :color="widgetColor" />
+      <jitsi-call :widget-color="widgetColor" :from-the-input="true" />
     </div>
   </div>
 </template>
@@ -28,6 +29,9 @@ import configMixin from '../mixins/configMixin';
 import FluentIcon from 'shared/components/FluentIcon/Index.vue';
 import ResizableTextArea from 'shared/components/ResizableTextArea.vue';
 import darkModeMixin from 'widget/mixins/darkModeMixin.js';
+import JitsiCall from './JitsiCall.vue';
+// app/javascript/widget/components/ChatInputWrap.vue
+// app/javascript/widget/components/JitsiCall.vue
 
 const EmojiInput = () => import('shared/components/emoji/EmojiInput');
 
@@ -39,6 +43,7 @@ export default {
     EmojiInput,
     FluentIcon,
     ResizableTextArea,
+    JitsiCall,
   },
   mixins: [clickaway, configMixin, darkModeMixin],
   props: {

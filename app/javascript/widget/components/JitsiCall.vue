@@ -1,9 +1,13 @@
 <template>
     <div>
-        <button class="join-call-button" :is-loading="isLoading" @click="joinTheCall"
+        <button v-if="!fromTheInput" class="join-call-button" :is-loading="isLoading" @click="joinTheCall"
             :style="{ backgroundColor: this.widgetColor }">
             <fluent-icon icon="video-add" class="join-call-button__icon" />
             Start Video Call
+        </button>
+        <button v-if="fromTheInput" @click="joinTheCall">
+
+            <fluent-icon icon="video-add" class="join-call-button__icon" />
         </button>
         <div v-if="isOpen" class="video-call--container">
             <iframe :src="this.meetingUrl"
@@ -36,6 +40,10 @@ export default {
         },
         widgetColor: {
             type: String,
+        },
+        fromTheInput: {
+            type: Boolean,
+            default: false,
         },
 
     },

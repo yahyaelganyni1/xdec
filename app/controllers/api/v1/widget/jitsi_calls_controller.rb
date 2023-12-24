@@ -1,6 +1,6 @@
 class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # rubocop:disable Layout/EndOfLine
   before_action :set_conversation, only: [:create, :index]
-  before_action :set_message, only: [:update] # rubocop:disable Rails/LexicallyScopedActionFilter
+  before_action :set_message, only: [:update]
   include JitsiMeetingLink
 
   JITSI_SERVER_URL = 'https://jitsi.xdec.io/'.freeze
