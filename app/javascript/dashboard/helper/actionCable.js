@@ -248,6 +248,8 @@ class ActionCableConnector extends BaseActionCableConnector {
       closeModalBtn.style.padding = '10px';
       closeModalBtn.style.borderRadius = '5px';
 
+      const WIDTH = window.innerWidth;
+
       popupModal.style.display = 'flex';
       popupModal.style.justifyContent = 'center';
       popupModal.style.alignItems = 'center';
@@ -255,7 +257,7 @@ class ActionCableConnector extends BaseActionCableConnector {
       popupModal.style.top = '50%';
       popupModal.style.left = '50%';
       popupModal.style.transform = 'translate(-50%, -50%)';
-      popupModal.style.width = '50%';
+      popupModal.style.width = WIDTH > 800 ? '40%' : '80%';
       popupModal.style.height = '40%';
       popupModal.style.backgroundColor = '#fff';
       popupModal.style.zIndex = '1';
@@ -264,6 +266,7 @@ class ActionCableConnector extends BaseActionCableConnector {
       popupModal.style.padding = '20px';
       popupModal.style.textAlign = 'center';
       popupModal.style.flexDirection = 'column';
+
       const popupButtons = popupModal.querySelectorAll('button');
       popupButtons.forEach(button => {
         button.style.cursor = 'pointer';
