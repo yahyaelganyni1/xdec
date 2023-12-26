@@ -7,6 +7,7 @@ class MicrosoftClient extends ApiClient {
   }
 
   generateAuthorization(payload) {
+    console.log("payload", payload)
     return axios.post(`${this.url}/authorization`, payload);
   }
 }

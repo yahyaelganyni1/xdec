@@ -36,7 +36,14 @@ export default {
         async onClick() {
             this.isLoading = true;
             try {
-                await DyteAPI.createAMeeting(this.conversationId);
+                console.log(this.conversationId, 'this.conversationId from JitsiCallButton.vue')
+                // await DyteAPI.createAMeeting(this.conversationId);
+                await DyteAPI.createJitsiMeeting(this.conversationId);
+                const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
+                const urlLocation = window.location.href;
+                const xAuthToken = window.authToken;
+
+                console.table({ baseUrl, urlLocation, xAuthToken });
             } catch (error) {
                 this.showAlert(this.$t('INTEGRATION_SETTINGS.DYTE.CREATE_ERROR'));
             } finally {

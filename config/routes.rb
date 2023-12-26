@@ -211,6 +211,8 @@ Rails.application.routes.draw do
                 post :add_participant_to_meeting
               end
             end
+            # puth jitsi_meeting_controller.rb here
+            resource :jitsi_meeting_agent, only: [:create, index]
           end
           resources :working_hours, only: [:update]
 

@@ -6,7 +6,7 @@
       color: textColor,
     }" @click="joinTheCall">
       <fluent-icon icon="video-add" class="mr-2" />
-      {{ $t('INTEGRATIONS.DYTE.CLICK_HERE_TO_JOIN') }}
+      {{ $t('INTEGRATIONS.DYTE.CLICK_HERE_TO_JOIN') }} test from integration
     </button>
     <div v-if="dyteAuthToken" class="video-call--container">
       <iframe :src="meetingLink"

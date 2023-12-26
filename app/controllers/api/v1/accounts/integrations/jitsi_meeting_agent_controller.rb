@@ -1,4 +1,4 @@
-class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accounts::Conversations::BaseController # rubocop:disable Layout/EndOfLine
+class Api::V1::Accounts::Conversations::JitsiMeetingAgentController < Api::V1::Accounts::BaseController # rubocop:disable Layout/EndOfLine
   include JitsiMeetingLink
 
   def index
