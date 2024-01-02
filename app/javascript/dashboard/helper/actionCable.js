@@ -118,11 +118,12 @@ class ActionCableConnector extends BaseActionCableConnector {
 
 
   onMessageCreated = data => {
-
+    console.log('data', data)
     const popupModalClass = document.querySelector('.popup-modal');
     const openIframes = document.querySelectorAll('iframe');
     if (
       data.content_type === 'integrations' &&
+      data.message_type === 0 &&
       data.content.includes('has started a video call') &&
       !popupModalClass &&
       openIframes.length === 0

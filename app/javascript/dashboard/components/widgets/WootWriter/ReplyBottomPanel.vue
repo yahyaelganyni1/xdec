@@ -53,7 +53,6 @@
         {{ sendButtonText }}
       </woot-button>
     </div>
-
   </div>
 </template>
 

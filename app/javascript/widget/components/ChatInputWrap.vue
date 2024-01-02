@@ -30,8 +30,6 @@ import FluentIcon from 'shared/components/FluentIcon/Index.vue';
 import ResizableTextArea from 'shared/components/ResizableTextArea.vue';
 import darkModeMixin from 'widget/mixins/darkModeMixin.js';
 import JitsiCall from './JitsiCall.vue';
-// app/javascript/widget/components/ChatInputWrap.vue
-// app/javascript/widget/components/JitsiCall.vue
 
 const EmojiInput = () => import('shared/components/emoji/EmojiInput');
 

@@ -40,6 +40,7 @@ export default {
         },
         widgetColor: {
             type: String,
+            default: '#1f93ff'
         },
         fromTheInput: {
             type: Boolean,

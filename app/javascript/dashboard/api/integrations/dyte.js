@@ -16,7 +16,11 @@ class DyteAPI extends ApiClient {
   createJitsiMeeting(conversationId) {
     console.log("jitsi meeting has fired", conversationId)
     console.log('url', this.url)
-    return axios.post(`${this.url}/jitsi_meeting`, {
+    // replace /dyte from this.url with /jitsi_meeting_agents
+
+    const newUrl = this.url.replace('/dyte', '/jitsi_meeting_agents')
+    console.log('new url', newUrl)
+    return axios.post(newUrl, {
       conversation_id: conversationId,
     });
   }

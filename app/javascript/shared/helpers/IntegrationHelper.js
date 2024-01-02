@@ -6,5 +6,6 @@ export const buildDyteURL = (roomName, dyteAuthToken) => {
 };
 
 export const buildJitsiURL = roomName => {
+  console.log('room name', roomName)
   return `${JITSI_MEETING_LINK}${roomName}`;
 };

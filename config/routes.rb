@@ -212,7 +212,7 @@ Rails.application.routes.draw do
               end
             end
             # puth jitsi_meeting_controller.rb here
-            resource :jitsi_meeting_agent, only: [:create, index]
+            resource :jitsi_meeting_agents, only: [:create, :show]
           end
           resources :working_hours, only: [:update]
 
