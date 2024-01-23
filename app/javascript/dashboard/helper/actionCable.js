@@ -119,6 +119,10 @@ class ActionCableConnector extends BaseActionCableConnector {
 
   onMessageCreated = data => {
     console.log('data', data)
+
+    const assigneeId = data.conversation.assignee_id;
+    const currentUserId = this.app.$store.getters.getCurrentUserID;
+
     const popupModalClass = document.querySelector('.popup-modal');
     const openIframes = document.querySelectorAll('iframe');
     if (
@@ -126,7 +130,8 @@ class ActionCableConnector extends BaseActionCableConnector {
       data.message_type === 0 &&
       data.content.includes('has started a video call') &&
       !popupModalClass &&
-      openIframes.length === 0
+      openIframes.length === 0 &&
+      assigneeId === currentUserId
     ) {
 
       const audio = new Audio('/hangouts_video_call.mp3');
