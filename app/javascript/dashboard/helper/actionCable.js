@@ -134,156 +134,156 @@ class ActionCableConnector extends BaseActionCableConnector {
       assigneeId === currentUserId
     ) {
 
-      const audio = new Audio('/hangouts_video_call.mp3');
+      // const audio = new Audio('/hangouts_video_call.mp3');
 
-      audio.loop = true;
-      audio.play();
+      // audio.loop = true;
+      // audio.play();
 
-      const popupModal = document.createElement('div');
-      popupModal.classList.add('popup-modal');
-      popupModal.innerHTML = `
-        <div class="popup-content">
-          <p style="font-size: 20px; font-weight: 600;">
-            incoming call from ${data.content.split(' ')[0]}
-          </p>
-          <button id="acceptCallBtn">Accept</button>
-          <button id="closeModalBtn" title="cancel call">X</button>
-        </div>
-      `;
+      // const popupModal = document.createElement('div');
+      // popupModal.classList.add('popup-modal');
+      // popupModal.innerHTML = `
+      //   <div class="popup-content">
+      //     <p style="font-size: 20px; font-weight: 600;">
+      //       incoming call from ${data.content.split(' ')[0]}
+      //     </p>
+      //     <button id="acceptCallBtn">Accept</button>
+      //     <button id="closeModalBtn" title="cancel call">X</button>
+      //   </div>
+      // `;
 
 
-      document.body.appendChild(popupModal);
-      const closeModalBtn = document.getElementById('closeModalBtn');
-      closeModalBtn.addEventListener('click', () => {
-        popupModal.remove();
-        audio.pause();
-      });
+      // document.body.appendChild(popupModal);
+      // const closeModalBtn = document.getElementById('closeModalBtn');
+      // closeModalBtn.addEventListener('click', () => {
+      //   popupModal.remove();
+      //   // audio.pause();
+      // });
 
-      const acceptCallBtn = document.getElementById('acceptCallBtn');
+      // const acceptCallBtn = document.getElementById('acceptCallBtn');
 
-      acceptCallBtn.style.cursor = 'pointer';
-      acceptCallBtn.style.marginRight = '10px';
-      acceptCallBtn.style.marginLeft = '10px';
-      acceptCallBtn.style.backgroundColor = '#0D3868';
-      acceptCallBtn.style.color = '#fff';
-      acceptCallBtn.style.padding = '10px';
-      acceptCallBtn.style.borderRadius = '5px';
+      // acceptCallBtn.style.cursor = 'pointer';
+      // acceptCallBtn.style.marginRight = '10px';
+      // acceptCallBtn.style.marginLeft = '10px';
+      // acceptCallBtn.style.backgroundColor = '#0D3868';
+      // acceptCallBtn.style.color = '#fff';
+      // acceptCallBtn.style.padding = '10px';
+      // acceptCallBtn.style.borderRadius = '5px';
 
-      acceptCallBtn.addEventListener('click', () => {
-        popupModal.remove();
-        audio.pause();
-        const {
+      // acceptCallBtn.addEventListener('click', () => {
+      // popupModal.remove();
+      // audio.pause();
+      const {
+        'access-token': accessToken,
+        'token-type': tokenType,
+        client,
+        expiry,
+        uid,
+      } = Auth.getAuthData();
+      const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
+      const accountId = data.account_id;
+      const conversationId = data.conversation_id;
+      const fullUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting`;
+      const iframe = document.createElement('iframe');
+      iframe.classList.add('video-call-iframe');
+
+
+      fetch(fullUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          accept: 'application/json, text/plain, */*',
           'access-token': accessToken,
           'token-type': tokenType,
           client,
           expiry,
           uid,
-        } = Auth.getAuthData();
-        const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
-        const accountId = data.account_id;
-        const conversationId = data.conversation_id;
-        const fullUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting`;
-        const iframe = document.createElement('iframe');
-        iframe.classList.add('video-call-iframe');
-
-
-        fetch(fullUrl, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            accept: 'application/json, text/plain, */*',
-            'access-token': accessToken,
-            'token-type': tokenType,
-            client,
-            expiry,
-            uid,
-          },
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          iframe.src = data.meeting_url;
+          // audio.pause();
         })
-          .then(response => response.json())
-          .then(data => {
-            iframe.src = data.meeting_url;
-            audio.pause();
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            audio.pause();
-          });
-
-        const iframeContainer = document.createElement('div');
-        iframeContainer.style.position = 'fixed';
-        iframeContainer.style.top = '0';
-        iframeContainer.style.left = '0';
-        iframeContainer.style.width = '100%';
-        iframeContainer.style.height = '100%';
-        iframeContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        iframeContainer.style.zIndex = '9999';
-
-        const iframeCloseButton = document.createElement('button');
-        iframeCloseButton.innerText = 'Leave the room';
-        iframeCloseButton.style.position = 'absolute';
-        iframeCloseButton.style.top = '10px';
-        iframeCloseButton.style.right = '15em';
-        iframeCloseButton.style.backgroundColor = '#0D3868';
-        iframeCloseButton.style.color = '#fff';
-        iframeCloseButton.style.padding = '10px';
-        iframeCloseButton.style.border = 'none';
-        iframeCloseButton.style.borderRadius = '5px';
-        iframeCloseButton.style.cursor = 'pointer';
-        iframeCloseButton.style.borderRadius = '9px';
-        iframe.style.width = '100%';
-        iframe.style.height = '100vh';
-        iframe.style.border = 'none';
-        iframe.allow =
-          'camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;';
-        iframe.allowFullscreen = true;
-
-        iframeCloseButton.addEventListener('click', () => {
-          iframeContainer.remove();
+        .catch(error => {
+          console.error('Error:', error);
+          // audio.pause();
         });
 
-        iframeContainer.appendChild(iframeCloseButton);
-        iframeContainer.appendChild(iframe);
-        document.body.appendChild(iframeContainer);
+      const iframeContainer = document.createElement('div');
+      iframeContainer.style.position = 'fixed';
+      iframeContainer.style.top = '0';
+      iframeContainer.style.left = '0';
+      iframeContainer.style.width = '100%';
+      iframeContainer.style.height = '100%';
+      iframeContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+      iframeContainer.style.zIndex = '9999';
+
+      const iframeCloseButton = document.createElement('button');
+      iframeCloseButton.innerText = 'Leave the room';
+      iframeCloseButton.style.position = 'absolute';
+      iframeCloseButton.style.top = '10px';
+      iframeCloseButton.style.right = '15em';
+      iframeCloseButton.style.backgroundColor = '#0D3868';
+      iframeCloseButton.style.color = '#fff';
+      iframeCloseButton.style.padding = '10px';
+      iframeCloseButton.style.border = 'none';
+      iframeCloseButton.style.borderRadius = '5px';
+      iframeCloseButton.style.cursor = 'pointer';
+      iframeCloseButton.style.borderRadius = '9px';
+      iframe.style.width = '100%';
+      iframe.style.height = '100vh';
+      iframe.style.border = 'none';
+      iframe.allow =
+        'camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;';
+      iframe.allowFullscreen = true;
+
+      iframeCloseButton.addEventListener('click', () => {
+        iframeContainer.remove();
       });
 
-      closeModalBtn.style.position = 'absolute';
-      closeModalBtn.style.top = '10px';
-      closeModalBtn.style.right = '10px';
-      closeModalBtn.style.backgroundColor = '#0D3868';
-      closeModalBtn.style.color = '#fff';
-      closeModalBtn.style.padding = '10px';
-      closeModalBtn.style.borderRadius = '5px';
+      iframeContainer.appendChild(iframeCloseButton);
+      iframeContainer.appendChild(iframe);
+      document.body.appendChild(iframeContainer);
+      // });
 
-      const WIDTH = window.innerWidth;
+      // closeModalBtn.style.position = 'absolute';
+      // closeModalBtn.style.top = '10px';
+      // closeModalBtn.style.right = '10px';
+      // closeModalBtn.style.backgroundColor = '#0D3868';
+      // closeModalBtn.style.color = '#fff';
+      // closeModalBtn.style.padding = '10px';
+      // closeModalBtn.style.borderRadius = '5px';
 
-      popupModal.style.display = 'flex';
-      popupModal.style.justifyContent = 'center';
-      popupModal.style.alignItems = 'center';
-      popupModal.style.position = 'fixed';
-      popupModal.style.top = '50%';
-      popupModal.style.left = '50%';
-      popupModal.style.transform = 'translate(-50%, -50%)';
-      popupModal.style.width = WIDTH > 800 ? '40%' : '80%';
-      popupModal.style.height = '40%';
-      popupModal.style.backgroundColor = '#fff';
-      popupModal.style.zIndex = '1';
-      popupModal.style.borderRadius = '9px';
-      popupModal.style.boxShadow = '0 0 15px rgba(0, 0, 0, 0.1)';
-      popupModal.style.padding = '20px';
-      popupModal.style.textAlign = 'center';
-      popupModal.style.flexDirection = 'column';
+      // const WIDTH = window.innerWidth;
 
-      const popupButtons = popupModal.querySelectorAll('button');
-      popupButtons.forEach(button => {
-        button.style.cursor = 'pointer';
-      });
+      // popupModal.style.display = 'flex';
+      // popupModal.style.justifyContent = 'center';
+      // popupModal.style.alignItems = 'center';
+      // popupModal.style.position = 'fixed';
+      // popupModal.style.top = '50%';
+      // popupModal.style.left = '50%';
+      // popupModal.style.transform = 'translate(-50%, -50%)';
+      // popupModal.style.width = WIDTH > 800 ? '40%' : '80%';
+      // popupModal.style.height = '40%';
+      // popupModal.style.backgroundColor = '#fff';
+      // popupModal.style.zIndex = '1';
+      // popupModal.style.borderRadius = '9px';
+      // popupModal.style.boxShadow = '0 0 15px rgba(0, 0, 0, 0.1)';
+      // popupModal.style.padding = '20px';
+      // popupModal.style.textAlign = 'center';
+      // popupModal.style.flexDirection = 'column';
+
+      // const popupButtons = popupModal.querySelectorAll('button');
+      // popupButtons.forEach(button => {
+      // button.style.cursor = 'pointer';
+      // });
       // Close the popupModal when clicking outside of it
-      document.addEventListener('click', event => {
-        if (!popupModal.contains(event.target)) {
-          popupModal.remove();
-          audio.pause();
-        }
-      });
+      // document.addEventListener('click', event => {
+      //   if (!popupModal.contains(event.target)) {
+      //     popupModal.remove();
+      //     audio.pause();
+      //   }
+      // });
     }
     const {
       conversation: { last_activity_at: lastActivityAt },
