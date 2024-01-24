@@ -82,6 +82,9 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
                                      sender: @conversation.contact
                                    })
 
+    # to reassign the conversation to another agent when the call is started by the customer you can uncomment the below line
+    # @conversation.update!(assignee_id: 3)
+
     render json: {
       'message': {
         'conversation_id': @conversation.display_id,
