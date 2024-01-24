@@ -80,7 +80,6 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
                                        type: 'dyte'
                                      },
                                      sender: @conversation.contact
-
                                    })
 
     render json: {
