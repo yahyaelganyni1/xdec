@@ -6,14 +6,22 @@
             Start Video Call
         </button>
         <button v-if="fromTheInput" @click="joinTheCall">
-
             <fluent-icon icon="video-add" class="join-call-button__icon" />
         </button>
         <div v-if="isOpen" class="video-call--container">
-            <iframe :src="this.meetingUrl"
-                allow="camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;" />
+            <!-- <iframe :src="this.meetingUrl"
+                allow="camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;" /> -->
+            <div class="loading" v-if="isLoading">
+                <div class="lds-facebook">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                Waiting for agent to join...
+            </div>
             <button class="leave-call-button" @click="leaveTheRoom">
                 leave the room
+                <!-- this should be cancel the call -->
             </button>
         </div>
     </div>
@@ -23,6 +31,7 @@ import { buildDyteURL } from 'shared/helpers/IntegrationHelper';
 import alertMixin from 'shared/mixins/alertMixin';
 import { buildSearchParamsWithLocale } from '../helpers/urlParamsHelper'
 import FluentIcon from '../../shared/components/FluentIcon/DashboardIcon.vue'
+import { tr } from 'date-fns/locale';
 // app/javascript/shared/components/FluentIcon/DashboardIcon.vue
 // app/javascript/widget/components/JitsiCall.vue
 
@@ -91,12 +100,13 @@ export default {
                 }).then(response => response.json())
                     .then(data => {
                         this.meetingUrl = data.message.meeting_url
+                        console.log('meetingUrl====', data.message.meeting_url)
                         this.isOpen = true;
                     })
             } catch (err) {
                 this.showAlert(this.$t('INTEGRATION_SETTINGS.DYTE.JOIN_ERROR'));
             } finally {
-                this.isLoading = false;
+                this.isLoading = true;
             }
         },
         leaveTheRoom() {
@@ -137,6 +147,21 @@ export default {
         border: 0;
     }
 
+    .loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #fff;
+        font-size: 1.5em;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: var(--z-index-high);
+    }
+
     .leave-call-button {
         position: absolute;
         top: 1em;
@@ -147,5 +172,50 @@ export default {
         font-size: .8em;
         padding: .5em 1em;
     }
+
+    .lds-facebook {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+    }
+
+    .lds-facebook div {
+        display: inline-block;
+        position: absolute;
+        left: 8px;
+        width: 16px;
+        background: #fff;
+        animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+    }
+
+    .lds-facebook div:nth-child(1) {
+        left: 8px;
+        animation-delay: -0.24s;
+    }
+
+    .lds-facebook div:nth-child(2) {
+        left: 32px;
+        animation-delay: -0.12s;
+    }
+
+    .lds-facebook div:nth-child(3) {
+        left: 56px;
+        animation-delay: 0;
+    }
+
+    @keyframes lds-facebook {
+        0% {
+            top: 8px;
+            height: 64px;
+        }
+
+        50%,
+        100% {
+            top: 24px;
+            height: 32px;
+        }
+    }
+
 }
 </style>

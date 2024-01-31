@@ -254,7 +254,11 @@ Rails.application.routes.draw do
         resources :campaigns, only: [:index]
         resources :events, only: [:create]
         resources :messages, only: [:index, :create, :update]
-        resources :jitsi_calls, only: [:index, :create]
+        resources :jitsi_calls, only: [:index, :create] do
+          collection do
+            post :start_call
+          end
+        end
         resources :conversations, only: [:index, :create] do
           collection do
             post :destroy_custom_attributes
