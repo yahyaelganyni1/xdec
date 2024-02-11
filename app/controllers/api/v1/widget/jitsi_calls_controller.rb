@@ -94,9 +94,9 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
                              headers: { 'Content-Type' => 'application/xml' },
                              basic_auth: { username: 'administrator', password: 'C1sco12345' })
 
-    p '--------====response-header-location====--------'
-    p response.headers['location']
-    p '--------====response====--------'
+    # p '--------====response-header-location====--------'
+    # p response.headers['location']
+    # p '--------====response====--------'
 
     # to reassign the conversation to another agent when the call is started by the customer you can uncomment the below line
     # @conversation.update!(assignee_id: 3)
@@ -125,9 +125,16 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
     }, status: :ok
   end
 
-  def start_call # rubocop:disable Metrics/MethodLength
+  def start_call # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
     recived_data = params[:data]
     assignee_id = recived_data[:agent_id]
+
+    if assignee_id.present? && !User.exists?(assignee_id)
+      render json: { error: 'Invalid assignee ID' }, status: :unprocessable_entity
+      return
+    end
+
+
     @conversation.update!(assignee_id: assignee_id) # if assignee_id.present? && @conversation.assignee_id != assignee_id
 
     agent_name = @conversation.assignee&.name
@@ -145,8 +152,6 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
                                      sender: @conversation.contact
                                    })
 
-    p "token_from_jitsi: #{@token}"
-
     render json: {
       'message': {
         'meeting_url': @meeting_name,
@@ -159,7 +164,7 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
         'website_token': @web_widget.website_token,
         'recived_data': recived_data # rubocop:disable Lint/DuplicateHashKey
       }
-    }
+    }, status: :ok
   end
 
   def end_call # rubocop:disable Metrics/MethodLength
@@ -177,7 +182,7 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
                                      content_type: :integrations,
                                      account_id: @conversation.account_id,
                                      inbox_id: @conversation.inbox_id,
-                                     message_type: :outgoing,
+                                     message_type: :incoming,
                                      private: false,
                                      content_attributes: {
                                        type: 'text'
