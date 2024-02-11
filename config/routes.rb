@@ -257,6 +257,7 @@ Rails.application.routes.draw do
         resources :jitsi_calls, only: [:index, :create] do
           collection do
             post :start_call
+            delete :end_call
           end
         end
         resources :conversations, only: [:index, :create] do

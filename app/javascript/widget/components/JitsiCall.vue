@@ -8,7 +8,7 @@
         <button v-if="fromTheInput" @click="joinTheCall">
             <fluent-icon icon="video-add" class="join-call-button__icon" />
         </button>
-        <div v-if="isOpen" class="video-call--container">
+        <div v-if="isOpen" class="video-call--container" id="videoCallContainer">
             <!-- <iframe :src="this.meetingUrl"
                 allow="camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;" /> -->
             <div class="loading" v-if="isLoading">
@@ -20,8 +20,7 @@
                 Waiting for agent to join...
             </div>
             <button class="leave-call-button" @click="leaveTheRoom">
-                leave the room
-                <!-- this should be cancel the call -->
+                Cancel Call
             </button>
         </div>
     </div>
@@ -58,7 +57,7 @@ export default {
 
     },
     data() {
-        return { isLoading: false, dyteAuthToken: '', isSDKMounted: false, isOpen: false, meetingUrl: '' };
+        return { isLoading: false, dyteAuthToken: '', isSDKMounted: false, isOpen: false, meetingUrl: '', taskLocation: '' };
     },
     computed: {
         meetingLink() {
@@ -77,8 +76,6 @@ export default {
                 const xAuthToken = window.authToken;
                 const url = `${baseUrl}/api/v1/widget/jitsi_calls${search}`;
                 const os = navigator.platform.split(' ')[0];
-
-                console.log('widgetColor====', this.widgetColor);
 
                 fetch(url, {
                     "headers": {
@@ -100,7 +97,10 @@ export default {
                 }).then(response => response.json())
                     .then(data => {
                         this.meetingUrl = data.message.meeting_url
-                        console.log('meetingUrl====', data.message.meeting_url)
+                        // const taskId = data.message.task_id;
+                        this.taskLocation = data.message.task_location;
+                        console.log('meeting has been created successfully', data.message.meeting_url);
+                        console.log(data.message.task_location, 'task_location');
                         this.isOpen = true;
                     })
             } catch (err) {
@@ -111,7 +111,47 @@ export default {
         },
         leaveTheRoom() {
             this.dyteAuthToken = '';
-            this.isOpen = false;
+            // this.isOpen = false;
+            try {
+                const search = buildSearchParamsWithLocale(window.location.search);
+                const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
+                const urlLocation = window.location.href;
+                const xAuthToken = window.authToken;
+                const url = `${baseUrl}/api/v1/widget/jitsi_calls/end_call${search}`;
+                const os = navigator.platform.split(' ')[0];
+                console.log(url, 'url')
+                console.log(this.taskLocation, 'taskLocation')
+                console.log('==--leave the room--==')
+                fetch(url,
+
+                    {
+                        "headers": {
+                            "accept": "application/json, text/plain, */*",
+                            "accept-language": "en-US,en;q=0.9,ar;q=0.8",
+                            "content-type": "application/json",
+                            "sec-ch-ua": "\"Google Chrome\";v=\"119\", \"Chromium\";v=\"119\", \"Not?A_Brand\";v=\"24\"",
+                            "sec-ch-ua-mobile": "?0",
+                            "sec-ch-ua-platform": `"${os}"`,
+                            "sec-fetch-dest": "empty",
+                            "sec-fetch-mode": "cors",
+                            "sec-fetch-site": "same-origin",
+                            "x-auth-token": xAuthToken,
+                        },
+                        "body": JSON.stringify({ task_location: this.taskLocation }),
+                        "referrer": urlLocation,
+                        "method": "DELETE",
+                        "mode": "cors",
+                        "credentials": "omit",
+                        "body": JSON.stringify({ "Location": this.taskLocation })
+                    }).then(response => response.json())
+                    .then(data => {
+                        console.log('meeting has been ended successfully', data);
+                        this.isOpen = false;
+                    })
+            } catch (error) {
+                console.log('error', error);
+            }
+
         },
     },
 };
@@ -163,14 +203,17 @@ export default {
     }
 
     .leave-call-button {
-        position: absolute;
-        top: 1em;
-        right: 4em;
-        background-color: #5145e7;
-        color: rgb(255, 255, 255);
-        border-radius: 9px;
-        font-size: .8em;
-        padding: .5em 1em;
+
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 10000;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        background-color: red;
+
     }
 
     .lds-facebook {

@@ -40,8 +40,6 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
 
     auth_token_4 = auth_token.slice(segment_length.ceil * 3, segment_length.ceil)
 
-
-
     p "auth_token: #{auth_token}"
 
     xml_body = "
@@ -91,10 +89,14 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
 </Task>
     "
 
-    HTTParty.post(url,
-                  body: xml_body,
-                  headers: { 'Content-Type' => 'application/xml' },
-                  basic_auth: { username: 'administrator', password: 'C1sco12345' })
+    response = HTTParty.post(url,
+                             body: xml_body,
+                             headers: { 'Content-Type' => 'application/xml' },
+                             basic_auth: { username: 'administrator', password: 'C1sco12345' })
+
+    p '--------====response-header-location====--------'
+    p response.headers['location']
+    p '--------====response====--------'
 
     # to reassign the conversation to another agent when the call is started by the customer you can uncomment the below line
     # @conversation.update!(assignee_id: 3)
@@ -117,7 +119,8 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
         'conversation_id': @conversation.display_id,
         'meeting_url': meentin_name,
         'assignee_id': conversation.assignee_id,
-        'agent_name': conversation.assignee&.name
+        'agent_name': conversation.assignee&.name,
+        'task_location': response.headers['location']
       }
     }, status: :ok
   end
@@ -153,8 +156,38 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
         'assignee_id': conversation.assignee_id,
         'agent_name': agent_name,
         'recived_data': recived_data,
-        'website_token': @web_widget.website_token
+        'website_token': @web_widget.website_token,
+        'recived_data': recived_data # rubocop:disable Lint/DuplicateHashKey
       }
+    }
+  end
+
+  def end_call # rubocop:disable Metrics/MethodLength
+    require 'httparty'
+    # url = 'http://198.18.133.43:8080/ccp/task/feed/100080'.freeze
+
+    url = params[:Location]
+
+    HTTParty.delete(url,
+                    headers: { 'Content-Type' => 'application/xml' },
+                    basic_auth: { username: 'administrator', password: 'C1sco12345' })
+
+    @conversation.messages.create!({
+                                     content: 'you cancelled the video call',
+                                     content_type: :integrations,
+                                     account_id: @conversation.account_id,
+                                     inbox_id: @conversation.inbox_id,
+                                     message_type: :outgoing,
+                                     private: false,
+                                     content_attributes: {
+                                       type: 'text'
+                                     },
+                                     sender: @conversation.contact
+                                   })
+
+    render json: {
+      'message': 'meeting ended',
+      'Location': url
     }
   end
 

@@ -220,18 +220,17 @@ class ActionCableConnector extends BaseActionCableConnector {
       iframeContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
       iframeContainer.style.zIndex = '9999';
 
-      const iframeCloseButton = document.createElement('button');
-      iframeCloseButton.innerText = 'Leave the room';
-      iframeCloseButton.style.position = 'absolute';
-      iframeCloseButton.style.top = '10px';
-      iframeCloseButton.style.right = '15em';
-      iframeCloseButton.style.backgroundColor = '#0D3868';
-      iframeCloseButton.style.color = '#fff';
-      iframeCloseButton.style.padding = '10px';
-      iframeCloseButton.style.border = 'none';
-      iframeCloseButton.style.borderRadius = '5px';
-      iframeCloseButton.style.cursor = 'pointer';
-      iframeCloseButton.style.borderRadius = '9px';
+      const leaveButton = document.createElement('button');
+      leaveButton.innerText = 'Leave Call';
+      leaveButton.style.position = 'fixed';
+      leaveButton.style.top = '10px';
+      leaveButton.style.right = '10px';
+      leaveButton.style.zIndex = '10000';
+      leaveButton.style.padding = '10px';
+      leaveButton.style.border = 'none';
+      leaveButton.style.borderRadius = '5px';
+      leaveButton.style.color = 'white';
+      leaveButton.style.backgroundColor = 'red';;
       iframe.style.width = '100%';
       iframe.style.height = '100vh';
       iframe.style.border = 'none';
@@ -239,11 +238,11 @@ class ActionCableConnector extends BaseActionCableConnector {
         'camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;';
       iframe.allowFullscreen = true;
 
-      iframeCloseButton.addEventListener('click', () => {
+      leaveButton.addEventListener('click', () => {
         iframeContainer.remove();
       });
 
-      iframeContainer.appendChild(iframeCloseButton);
+      iframeContainer.appendChild(leaveButton);
       iframeContainer.appendChild(iframe);
       document.body.appendChild(iframeContainer);
       // });

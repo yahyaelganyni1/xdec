@@ -56,29 +56,26 @@ class ActionCableConnector extends BaseActionCableConnector {
   };
 
   onMessageCreated = data => {
-    console.log('new message', 'from onMessageCreated')
     console.log(data)
-
-
-
-    console.log(' data.message_type === 0 ', data.message_type === 0)
-    console.log(data.message_type)
-
-
+    const videoCallContainer = document.querySelector('.video-call--container');
+    console.log('videoCallContainer', videoCallContainer)
+    const popupIframe = document.querySelectorAll('.iframe-popup');
+    // console.log('popupIframe', popupIframe)
     if (
       data.content_type === 'integrations' &&
       data.message_type === 1 &&
-      data.content.includes('accepted the video call')
-      // !popupModalClass &&
-      // openIframes.length === 0 &&
+      data.content.includes('accepted the video call') &&
+      // videoCallContainer
+      popupIframe.length === 0
       // assigneeId === currentUserId
     ) {
-      const videoCallContainer = document.querySelector('.video-call--container');
-      if (videoCallContainer) {
-        videoCallContainer.style.display = 'none';
-      }
+      // if (videoCallContainer) {
+      //   videoCallContainer.style.display = 'none';
+      // }
       const createIframe = () => {
         const iframe = document.createElement('iframe');
+        iframe.className = 'iframe-popup';
+        console.log('iframe', iframe)
         iframe.style.width = '100%';
         iframe.style.height = '100%';
         iframe.allow = 'camera; microphone; fullscreen; autoplay';
@@ -116,6 +113,7 @@ class ActionCableConnector extends BaseActionCableConnector {
             this.isOpen = true;
             // Access the iframe src here
             const iframeSrc = this.meetingUrl;
+            console.log('iframeSrc', iframeSrc)
             // Use the iframeSrc as needed
             iframe.src = iframeSrc;
           });
@@ -142,8 +140,17 @@ class ActionCableConnector extends BaseActionCableConnector {
         leaveButton.style.backgroundColor = 'red';
         // Add event listener to remove the iframe when the button is clicked
         leaveButton.addEventListener('click', () => {
+          // Remove the iframe from the dom
           document.body.removeChild(iframe);
           document.body.removeChild(leaveButton);
+          // remove the videoCallContainer if it exists from the dom
+          const videoCallContainer = document.getElementById('videoCallContainer');
+          if (videoCallContainer) {
+            videoCallContainer.remove();
+            // reload the page
+            window.location.reload();
+
+          }
         });
 
         // Append the leave button to the body of the document

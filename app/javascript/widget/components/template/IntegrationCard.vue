@@ -103,16 +103,17 @@ export default {
             const leaveButton = document.createElement('button');
             // add class to button leave-room-button
             leaveButton.className = 'button small join-call-button leave-room-button';
-            leaveButton.innerText = 'Leave The Room';
-            leaveButton.style.position = 'absolute';
+            leaveButton.innerText = 'End Call';
+            leaveButton.innerText = 'Leave Call';
+            leaveButton.style.position = 'fixed';
             leaveButton.style.top = '10px';
-            leaveButton.style.right = '100px';
-            leaveButton.style.background = '#5145e7';
-            leaveButton.style.color = '#fff';
-            leaveButton.style.borderColor = '#5145e7';
-            leaveButton.style.padding = '1em';
-            leaveButton.style.textAlign = 'center';
+            leaveButton.style.right = '10px';
             leaveButton.style.zIndex = '10000';
+            leaveButton.style.padding = '10px';
+            leaveButton.style.border = 'none';
+            leaveButton.style.borderRadius = '5px';
+            leaveButton.style.color = 'white';
+            leaveButton.style.backgroundColor = 'red';
 
             leaveButton.addEventListener('click', this.leaveTheRoom);
             document.body.appendChild(leaveButton);
