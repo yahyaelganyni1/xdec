@@ -1,4 +1,4 @@
-class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
+class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # rubocop:disable Metrics/ClassLength
   before_action :set_conversation, only: [:create, :index]
   before_action :set_message, only: [:update] # rubocop:disable Rails/LexicallyScopedActionFilter
   before_action :set_meeting_url
@@ -134,7 +134,6 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
       return
     end
 
-
     @conversation.update!(assignee_id: assignee_id) # if assignee_id.present? && @conversation.assignee_id != assignee_id
 
     agent_name = @conversation.assignee&.name
@@ -167,15 +166,20 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
     }, status: :ok
   end
 
-  def end_call # rubocop:disable Metrics/MethodLength
+  def end_call # rubocop:disable Metrics/MethodLength,Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     require 'httparty'
+    require 'nokogiri'
     # url = 'http://198.18.133.43:8080/ccp/task/feed/100080'.freeze
 
     url = params[:Location]
+    # get everything after the last / in the url
+    task_id = File.basename(url)
 
-    HTTParty.delete(url,
-                    headers: { 'Content-Type' => 'application/xml' },
-                    basic_auth: { username: 'administrator', password: 'C1sco12345' })
+    cancele_url = "http://198.18.133.43:8080/ccp-webapp/ccp/task/#{task_id}/close"
+
+    # HTTParty.delete(url,
+    #                 headers: { 'Content-Type' => 'application/xml' },
+    #                 basic_auth: { username: 'administrator', password: 'C1sco12345' })
 
     @conversation.messages.create!({
                                      content: 'you cancelled the video call',
@@ -190,10 +194,37 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
                                      sender: @conversation.contact
                                    })
 
+    # task status get requsest
+    response_status = HTTParty.get(url,
+                                   #  header: { 'Content-Type' => 'application/xml' },
+                                   basic_auth: { username: 'administrator', password: 'C1sco12345' })
+
+    xml_data = response_status.body
+
+    doc = Nokogiri::XML(xml_data)
+
+    if doc.at_css('status')&.content == 'reserved' && !doc.at_css('status')&.content.nil?
+      HTTParty.put(cancele_url,
+                   headers: { 'Content-Type' => 'application/xml' },
+                   basic_auth: { username: 'administrator', password: 'C1sco12345' })
+    elsif doc.at_css('status')&.content == 'queued' && !doc.at_css('status')&.content.nil?
+      HTTParty.delete(url,
+                      headers: { 'Content-Type' => 'application/xml' },
+                      basic_auth: { username: 'administrator', password: 'C1sco12345' })
+    end
+
     render json: {
       'message': 'meeting ended',
-      'Location': url
-    }
+      'Location': url,
+      'task_status_url': cancele_url,
+      'task_status': doc.at_css('status')&.content,
+      'task_id': task_id,
+      'task_status_response': response_status,
+      'task_status_response_body': response_status.body,
+      'task_status_response_code': response_status.code,
+      'task_status_response_message': response_status.message
+
+    }, status: :ok
   end
 
   private

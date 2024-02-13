@@ -238,3 +238,5 @@ group :development, :test do
   gem 'spring'
   gem 'spring-watcher-listen'
 end
+
+gem 'nokogiri', '~> 1.15', '>= 1.15.4'

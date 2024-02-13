@@ -57,21 +57,15 @@ class ActionCableConnector extends BaseActionCableConnector {
 
   onMessageCreated = data => {
     console.log(data)
-    const videoCallContainer = document.querySelector('.video-call--container');
-    console.log('videoCallContainer', videoCallContainer)
     const popupIframe = document.querySelectorAll('.iframe-popup');
-    // console.log('popupIframe', popupIframe)
+
     if (
       data.content_type === 'integrations' &&
       data.message_type === 1 &&
       data.content.includes('accepted the video call') &&
-      // videoCallContainer
       popupIframe.length === 0
-      // assigneeId === currentUserId
     ) {
-      // if (videoCallContainer) {
-      //   videoCallContainer.style.display = 'none';
-      // }
+
       const createIframe = () => {
         const iframe = document.createElement('iframe');
         iframe.className = 'iframe-popup';

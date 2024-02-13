@@ -899,6 +899,7 @@ DEPENDENCIES
   neighbor
   newrelic-sidekiq-metrics (>= 1.6.2)
   newrelic_rpm
+  nokogiri (~> 1.15, >= 1.15.4)
   omniauth
   omniauth-google-oauth2
   omniauth-oauth2
