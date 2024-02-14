@@ -21,15 +21,17 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
     }, status: :ok
   end
 
+  # start the call from the agent side (from the cesco side)
   def create # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
     require 'httparty'
+    # the cesco server url
     url = 'http://198.18.133.43:8080/ccp/task/feed/100080'.freeze
 
     meentin_name = meeting_url(@conversation.inbox_id, @conversation.contact.email, @conversation.display_id, @conversation.contact.name)
     auth_token = request.headers['X-Auth-Token']
 
     auth_length = auth_token.length
-
+    #  slice the auth token into 4 segments for the cesco xml can take it
     segment_length = auth_length / 4
 
     auth_token_1 = auth_token.slice(0, segment_length.ceil)
@@ -40,8 +42,7 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
 
     auth_token_4 = auth_token.slice(segment_length.ceil * 3, segment_length.ceil)
 
-    p "auth_token: #{auth_token}"
-
+    # the xml body that will be sent to the cesco server
     xml_body = "
     <Task>
     <name>John Doe1</name>
@@ -94,13 +95,6 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
                              headers: { 'Content-Type' => 'application/xml' },
                              basic_auth: { username: 'administrator', password: 'C1sco12345' })
 
-    # p '--------====response-header-location====--------'
-    # p response.headers['location']
-    # p '--------====response====--------'
-
-    # to reassign the conversation to another agent when the call is started by the customer you can uncomment the below line
-    # @conversation.update!(assignee_id: 3)
-
     @conversation.messages.create!({
                                      content: "#{conversation.contact.name} requested a video call",
                                      content_type: :text,
@@ -125,7 +119,9 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
     }, status: :ok
   end
 
+  # to start the call from the customer side
   def start_call # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
+    # to reassign the conversation to another agent when the call is started by the customer you can uncomment the below line
     recived_data = params[:data]
     assignee_id = recived_data[:agent_id]
 
@@ -166,17 +162,19 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
     }, status: :ok
   end
 
+  #  to end the call from the customer side
   def end_call # rubocop:disable Metrics/MethodLength,Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     require 'httparty'
     require 'nokogiri'
-    # url = 'http://198.18.133.43:8080/ccp/task/feed/100080'.freeze
 
     url = params[:Location]
     # get everything after the last / in the url
     task_id = File.basename(url)
 
     cancele_url = "http://198.18.133.43:8080/ccp-webapp/ccp/task/#{task_id}/close"
+
     contact_name = @conversation.contact.name
+    # send a message in the chat from the customer side that the call is ended
     @conversation.messages.create!({
                                      content: "#{contact_name}cancelled the video call",
                                      content_type: :integrations,
@@ -190,15 +188,15 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
                                      sender: @conversation.contact
                                    })
 
-    # task status get requsest
+    # task status requsest to check the status of the task before cancelling the task
     response_status = HTTParty.get(url,
-                                   #  header: { 'Content-Type' => 'application/xml' },
                                    basic_auth: { username: 'administrator', password: 'C1sco12345' })
 
     xml_data = response_status.body
 
     doc = Nokogiri::XML(xml_data)
-
+    # check the status of the task and take action based on the status
+    # if the status is reserved then we need to close the task
     if doc.at_css('status')&.content == 'reserved' && !doc.at_css('status')&.content.nil?
       HTTParty.put(cancele_url,
                    headers: { 'Content-Type' => 'application/xml' },
@@ -207,6 +205,8 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
       HTTParty.delete(url,
                       headers: { 'Content-Type' => 'application/xml' },
                       basic_auth: { username: 'administrator', password: 'C1sco12345' })
+    else
+      p 'task is not reserved or queued'
     end
 
     render json: {
@@ -233,6 +233,7 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
     @message = @web_widget.inbox.messages.find(permitted_params[:id])
   end
 
+  # creating a uneque and unfined meeting link between the agent and the customer
   def set_meeting_url
     @meeting_name = meeting_url(
       conversation.inbox_id,
