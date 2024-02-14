@@ -176,13 +176,9 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
     task_id = File.basename(url)
 
     cancele_url = "http://198.18.133.43:8080/ccp-webapp/ccp/task/#{task_id}/close"
-
-    # HTTParty.delete(url,
-    #                 headers: { 'Content-Type' => 'application/xml' },
-    #                 basic_auth: { username: 'administrator', password: 'C1sco12345' })
-
+    contact_name = @conversation.contact.name
     @conversation.messages.create!({
-                                     content: 'you cancelled the video call',
+                                     content: "#{contact_name}cancelled the video call",
                                      content_type: :integrations,
                                      account_id: @conversation.account_id,
                                      inbox_id: @conversation.inbox_id,
