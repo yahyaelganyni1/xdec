@@ -258,6 +258,7 @@ Rails.application.routes.draw do
           collection do
             post :start_call
             delete :end_call
+            post :nodge
           end
         end
         resources :conversations, only: [:index, :create] do

@@ -1,4 +1,4 @@
-class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # rubocop:disable Metrics/ClassLength,Layout/EndOfLine
+class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # rubocop:disable Metrics/ClassLength
   before_action :set_conversation, only: [:create, :index]
   before_action :set_message, only: [:update] # rubocop:disable Rails/LexicallyScopedActionFilter
   before_action :set_meeting_url
@@ -162,6 +162,31 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
     }, status: :ok
   end
 
+  def nodge
+    # to send a nudge message to the coustomer you can use the below code
+    agent_name = @conversation.assignee&.name
+    coustomer_name = @conversation.contact.name
+
+    nudge_message = "#{agent_name} is nodging #{coustomer_name}"
+
+    @conversation.messages.create!({
+                                     content: nudge_message,
+                                     content_type: :text,
+                                     account_id: @conversation.account_id,
+                                     inbox_id: @conversation.inbox_id,
+                                     message_type: :outgoing,
+                                     private: false,
+                                     content_attributes: {
+                                       type: 'text'
+                                     },
+                                     sender: @conversation.assignee
+                                   })
+
+    render json: {
+      'message': 'nodge'
+    }, status: :ok
+  end
+
   #  to end the call from the customer side
   def end_call # rubocop:disable Metrics/MethodLength,Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     require 'httparty'
@@ -176,7 +201,7 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
     contact_name = @conversation.contact.name
     # send a message in the chat from the customer side that the call is ended
     @conversation.messages.create!({
-                                     content: "#{contact_name}cancelled the video call",
+                                     content: "#{contact_name} cancelled the video call",
                                      content_type: :integrations,
                                      account_id: @conversation.account_id,
                                      inbox_id: @conversation.inbox_id,
