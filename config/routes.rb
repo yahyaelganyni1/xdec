@@ -81,7 +81,11 @@ Rails.application.routes.draw do
               post :filter
             end
             scope module: :conversations do
-              resources :jitsi_meeting, only: [:index, :create]
+              resources :jitsi_meeting, only: [:index, :create] do
+                collection do
+                  post :nudge
+                end
+              end
               resources :messages, only: [:index, :create, :destroy] do
                 member do
                   post :translate
@@ -212,7 +216,11 @@ Rails.application.routes.draw do
               end
             end
             # puth jitsi_meeting_controller.rb here
-            resource :jitsi_meeting_agents, only: [:create, :show]
+            resource :jitsi_meeting_agents, only: [:create, :show] do
+              collection do
+                post :nudge
+              end
+            end
           end
           resources :working_hours, only: [:update]
 

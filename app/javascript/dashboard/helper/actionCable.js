@@ -2,7 +2,8 @@ import AuthAPI from '../api/auth';
 import BaseActionCableConnector from '../../shared/helpers/BaseActionCableConnector';
 import DashboardAudioNotificationHelper from './AudioAlerts/DashboardAudioNotificationHelper';
 // /components/widgets/conversation/bubble/integrations/Dyte.vue'
-import Auth from '../api/auth';
+// import Auth from '../api/auth';
+import { createIframe } from './iframeHelper';
 // app/javascript/dashboard/api/auth.js
 // app/javascript/dashboard/helper/actionCable.js
 export const sendModuleCall = data => {
@@ -129,75 +130,7 @@ class ActionCableConnector extends BaseActionCableConnector {
       openIframes.length === 0 &&
       assigneeId === currentUserId
     ) {
-      const {
-        'access-token': accessToken,
-        'token-type': tokenType,
-        client,
-        expiry,
-        uid,
-      } = Auth.getAuthData();
-      const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
-      const accountId = data.account_id;
-      const conversationId = data.conversation_id;
-      const fullUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting`;
-      const iframe = document.createElement('iframe');
-      iframe.classList.add('video-call-iframe');
-
-
-      fetch(fullUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          accept: 'application/json, text/plain, */*',
-          'access-token': accessToken,
-          'token-type': tokenType,
-          client,
-          expiry,
-          uid,
-        },
-      })
-        .then(response => response.json())
-        .then(data => {
-          iframe.src = data.meeting_url;
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-
-      const iframeContainer = document.createElement('div');
-      iframeContainer.style.position = 'fixed';
-      iframeContainer.style.top = '0';
-      iframeContainer.style.left = '0';
-      iframeContainer.style.width = '100%';
-      iframeContainer.style.height = '100%';
-      iframeContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-      iframeContainer.style.zIndex = '9999';
-
-      const leaveButton = document.createElement('button');
-      leaveButton.innerText = 'Leave Call';
-      leaveButton.style.position = 'fixed';
-      leaveButton.style.top = '10px';
-      leaveButton.style.right = '10px';
-      leaveButton.style.zIndex = '10000';
-      leaveButton.style.padding = '10px';
-      leaveButton.style.border = 'none';
-      leaveButton.style.borderRadius = '5px';
-      leaveButton.style.color = 'white';
-      leaveButton.style.backgroundColor = 'red';;
-      iframe.style.width = '100%';
-      iframe.style.height = '100vh';
-      iframe.style.border = 'none';
-      iframe.allow =
-        'camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;';
-      iframe.allowFullscreen = true;
-
-      leaveButton.addEventListener('click', () => {
-        iframeContainer.remove();
-      });
-
-      iframeContainer.appendChild(leaveButton);
-      iframeContainer.appendChild(iframe);
-      document.body.appendChild(iframeContainer);
+      createIframe(data)
     }
     const {
       conversation: { last_activity_at: lastActivityAt },

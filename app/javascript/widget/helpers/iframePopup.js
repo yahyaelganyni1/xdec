@@ -1,7 +1,52 @@
+import { start } from 'turbolinks';
 import { buildSearchParamsWithLocale } from './urlParamsHelper'
+const iframe = document.createElement('iframe');
+
+export const shake = (element, duration = 90, intensity = 25, iterations = 6) => {
+    console.log('test from shake function')
+    console.log('element', element)
+    // Get original position for accurate return
+    const originalPosition = element.getBoundingClientRect();
+
+    // Get the viewport dimensions
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Create the keyframes
+    const keyframes = [
+        { transform: `translate(${intensity}px, ${intensity}px)` },
+        { transform: `translate(-${intensity}px, -${intensity}px)` },
+        { transform: `translate(-${intensity}px, ${intensity}px)` },
+        { transform: `translate(${intensity}px, -${intensity}px)` },
+    ];
+
+    // Create the timing options
+    const timing = {
+        duration,
+        iterations,
+    };
+
+    // Create the animation
+    const animation = element.animate(keyframes, timing);
+
+    // When the animation is complete, return the element to its original position
+    animation.onfinish = () => {
+        element.style.transform = `translate(${originalPosition.left}px, ${originalPosition.top}px)`;
+    };
+
+    // Return the animation
+
+    return animation;
+
+
+
+}
+
+
+
 
 export const createIframe = () => {
-    const iframe = document.createElement('iframe');
+    const iframeContainer = document.createElement('div');
     iframe.className = 'iframe-popup';
     console.log('iframe', iframe)
     iframe.style.width = '100%';
@@ -37,26 +82,38 @@ export const createIframe = () => {
         "credentials": "omit"
     }).then(response => response.json())
         .then(data => {
-            this.meetingUrl = data.message.meeting_url;
+            const meetingUrl = data.message.meeting_url;
             console.log('meetingUrl====', data.message.meeting_url);
-            this.isOpen = true;
+            // isOpen = true;
             // Access the iframe src here
-            const iframeSrc = this.meetingUrl;
-            console.log('iframeSrc', iframeSrc)
+            // const iframeSrc = meetingUrl;
+            // console.log('iframeSrc', iframeSrc)
             // Use the iframeSrc as needed
-            iframe.src = iframeSrc;
+            iframe.src = meetingUrl;
         });
     // Set the position and z-index of the iframe
-    iframe.style.position = 'fixed';
-    iframe.style.top = '0';
-    iframe.style.left = '0';
-    iframe.style.zIndex = '9999';
+    iframeContainer.style.position = 'fixed';
+    iframeContainer.style.top = '0';
+    iframeContainer.style.left = '0';
+    iframeContainer.style.width = '100%';
+    iframeContainer.style.height = '100%';
+    iframeContainer.style.backgroundColor = 'rgba(55, 55, 55, 1)';
+    iframeContainer.style.zIndex = '9999';
+    iframeContainer.id = 'iframeContainer';
+    iframeContainer.appendChild(iframe);
+
+
 
     // Append the iframe to the body of the document
-    document.body.appendChild(iframe);
+    document.body.appendChild(iframeContainer);
 
     // Create the leave button
     const leaveButton = document.createElement('button');
+    // ! the remove button with be removed after we implement from agent side
+    const alertButton = document.createElement('button');
+
+    document.body.appendChild(leaveButton);
+
     leaveButton.innerText = 'Leave Call';
     leaveButton.style.position = 'fixed';
     leaveButton.style.top = '10px';
@@ -70,8 +127,10 @@ export const createIframe = () => {
     // Add event listener to remove the iframe when the button is clicked
     leaveButton.addEventListener('click', () => {
         // Remove the iframe from the dom
-        document.body.removeChild(iframe);
-        document.body.removeChild(leaveButton);
+        // document.body.removeChild(iframe);
+        // document.body.removeChild(leaveButton);
+        // document.body.removeChild(alertButton);
+        iframeContainer.remove();
         // remove the videoCallContainer if it exists from the dom
         const videoCallContainer = document.getElementById('videoCallContainer');
         if (videoCallContainer) {
@@ -83,5 +142,34 @@ export const createIframe = () => {
     });
 
     // Append the leave button to the body of the document
-    document.body.appendChild(leaveButton);
+    iframeContainer.appendChild(leaveButton);
+
+    // Create the alert button
+    alertButton.innerText = 'Alert';
+    alertButton.style.position = 'fixed';
+    alertButton.style.bottom = '10px';
+    alertButton.style.left = '10px';
+    alertButton.style.zIndex = '10000';
+    alertButton.style.padding = '10px';
+    alertButton.style.border = 'none';
+    alertButton.style.borderRadius = '5px';
+    alertButton.style.color = 'white';
+    alertButton.style.backgroundColor = 'blue';
+    // Add event listener to trigger the alert
+    // Set the z-index of the alert button
+    alertButton.style.zIndex = '10001';
+
+    // Set the z-index of the body
+    document.body.style.zIndex = '10000';
+
+    // append the al
+    // Add event listener to trigger the alert
+    alertButton.addEventListener('click', () => {
+
+        shake(iframe);
+    });
+    // Append the alert button to the body of the document
+    // document.body.appendChild(alertButton);
 };
+
+

@@ -5,7 +5,7 @@ import { IFrameHelper } from 'widget/helpers/utils';
 import { shouldTriggerMessageUpdateEvent } from './IframeEventHelper';
 import { CHATWOOT_ON_MESSAGE } from '../constants/sdkEvents';
 import { buildSearchParamsWithLocale } from './urlParamsHelper'
-import { createIframe } from './iframePopup'
+import { createIframe, shake } from './iframePopup'
 // app/javascript/widget/helpers/urlParamsHelper.js
 // app/javascript/widget/helpers/actionCable.js
 
@@ -59,15 +59,21 @@ class ActionCableConnector extends BaseActionCableConnector {
     console.log(data)
     const popupIframe = document.querySelectorAll('.iframe-popup');
 
+    if (data.content.includes('is sending a nudge')) {
+      console.log('from the if condition ')
+      shake(popupIframe[0])
+      console.log(data.content, 'from the if nudge')
+    }
+
     if (
       data.content_type === 'integrations' &&
       data.message_type === 1 &&
       data.content.includes('accepted the video call') &&
       popupIframe.length === 0
     ) {
-
-      // Call the createIframe function wherever you want to create the iframe
       createIframe();
+
+
     }
 
     if (isMessageInActiveConversation(this.app.$store.getters, data)) {
