@@ -6,10 +6,13 @@
     </woot-button>
     <div v-if="isOpen" class="video-call--container">
       <iframe :src="this.meetingUrl"
-        allow="camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;" />
+        allow="camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;" id="iframe-dyte" />
       <woot-button size="small" variant="smooth" color-scheme="secondary" class="join-call-button" @click="leaveTheRoom">
         {{ $t('INTEGRATION_SETTINGS.DYTE.LEAVE_THE_ROOM') }}
       </woot-button>
+      <button class="nudge-btn" @click="nudgeCustomer">
+        nudge customer
+      </button>
     </div>
   </div>
 </template>
@@ -18,7 +21,7 @@ import { buildJitsiURL } from 'shared/helpers/IntegrationHelper';
 import alertMixin from 'shared/mixins/alertMixin';
 import Auth from '../../../../../api/auth';
 import { sendModuleCall } from '../../../../../helper/actionCable'
-
+import { createIframe } from '../../../../../helper/iframeHelper';
 
 export default {
   mixins: [alertMixin],
@@ -49,7 +52,52 @@ export default {
       const inComingCallResult = sendModuleCall();
       this.inComingCall = inComingCallResult;
     },
+    nudgeCustomer() {
+      console.log('nudge customer from Dyte')
+
+      const {
+        'access-token': accessToken,
+        'token-type': tokenType,
+        client,
+        expiry,
+        uid,
+      } = Auth.getAuthData();
+      const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
+      const accountId = data.account_id;
+      const conversationId = data.conversation_id;
+      try {
+        const nudgeUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting/nudge`
+
+        fetch(nudgeUrl,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              accept: 'application/json, text/plain, */*',
+              'access-token': accessToken,
+              'token-type': tokenType,
+              client,
+              expiry,
+              uid,
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Nudge message sent');
+            console.log(data, '__data__')
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            console.log('there was an error sending the nudge message')
+          });
+
+      } catch (err) {
+        this.showAlert(this.$t('INTEGRATION_SETTINGS.DYTE.NUDGE_ERROR'));
+        console.log('there was an error sending the nudge message')
+      }
+    },
     async joinTheCall() {
+
       this.isLoading = true;
       this.isOpen = true;
       const {
@@ -115,6 +163,19 @@ export default {
     width: 100%;
     height: 100%;
     border: 0;
+  }
+
+  .nudge-btn {
+    position: absolute;
+    top: 5;
+    background-color: green !important;
+    color: #fff !important;
+    border-radius: 9px;
+    padding: .5em 1em;
+    left: .6em;
+    min-width: 10%;
+    max-width: 20%;
+    cursor: pointer;
   }
 
   button {
