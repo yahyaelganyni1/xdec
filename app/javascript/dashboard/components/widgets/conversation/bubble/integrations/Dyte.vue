@@ -63,11 +63,12 @@ export default {
         uid,
       } = Auth.getAuthData();
       const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
-      const accountId = data.account_id;
-      const conversationId = data.conversation_id;
+      const accountId = window.location.href.split('/').slice(5, 6).join('/');
+      const conversationId = window.location.href.split('/').slice(7, 8).join('/');
+      // const fullUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting`;
       try {
         const nudgeUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting/nudge`
-
+        console.log('nudgeUrl', nudgeUrl)
         fetch(nudgeUrl,
           {
             method: 'POST',
@@ -127,6 +128,7 @@ export default {
           .then((response) => response.json())
           .then((data) => {
             this.meetingUrl = data.meeting_url;
+            console.log(data, '====================data_+++++++++++++');
           });
       } catch (err) {
         this.showAlert(this.$t('INTEGRATION_SETTINGS.DYTE.JOIN_ERROR'));

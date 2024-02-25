@@ -31,6 +31,7 @@ export const createIframe = (data) => {
         .then(response => response.json())
         .then(data => {
             iframe.src = data.meeting_url;
+            console.log('meetingUrl====', data.meeting_url)
         })
         .catch(error => {
             console.error('Error:', error);
