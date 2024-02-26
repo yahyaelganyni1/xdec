@@ -89,7 +89,7 @@ export default {
             this.meetingUrl = data.message.meeting_url
             const iframe = document.createElement('iframe');
             iframe.src = this.meetingUrl;
-            iframe.allow = "camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;";
+            iframe.classList.add('iframe-popup'); iframe.allow = "camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;";
             iframe.style.width = '100%';
             iframe.style.height = '100%';
             iframe.style.border = '0';
