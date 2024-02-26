@@ -71,8 +71,6 @@ class ActionCableConnector extends BaseActionCableConnector {
       popupIframe.length === 0
     ) {
       createIframe();
-
-
     }
 
     if (isMessageInActiveConversation(this.app.$store.getters, data)) {
