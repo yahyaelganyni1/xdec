@@ -10,7 +10,7 @@
             <fluent-icon icon="video-add" class="join-call-button__icon" />
         </button>
         <div v-if="isOpen" class="video-call--container">
-            <iframe :src="this.meetingUrl"
+            <iframe :src="this.meetingUrl" class="iframe-popup"
                 allow="camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;" />
             <button class="leave-call-button" @click="leaveTheRoom">
                 leave the room

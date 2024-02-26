@@ -4,7 +4,7 @@ import { ON_AGENT_MESSAGE_RECEIVED } from '../constants/widgetBusEvents';
 import { IFrameHelper } from 'widget/helpers/utils';
 import { shouldTriggerMessageUpdateEvent } from './IframeEventHelper';
 import { CHATWOOT_ON_MESSAGE } from '../constants/sdkEvents';
-
+import { shake } from './iframePopup';
 const isMessageInActiveConversation = (getters, message) => {
   const { conversation_id: conversationId } = message;
   const activeConversationId =
@@ -51,6 +51,14 @@ class ActionCableConnector extends BaseActionCableConnector {
   };
 
   onMessageCreated = data => {
+    const popupIframe = document.querySelectorAll('.iframe-popup');
+
+    if (data.content.includes('is sending a nudge')) {
+      shake(popupIframe[0])
+    }
+
+
+
     if (isMessageInActiveConversation(this.app.$store.getters, data)) {
       return;
     }

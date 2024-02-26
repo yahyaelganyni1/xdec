@@ -1,4 +1,4 @@
-class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accounts::Conversations::BaseController # rubocop:disable Layout/EndOfLine
+class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accounts::Conversations::BaseController
   include JitsiMeetingLink
 
   def index
@@ -36,6 +36,29 @@ class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accoun
         conversation.display_id,
         conversation.contact.name
       )
+    }, status: :ok
+  end
+
+  def nudge
+    conversation = @conversation
+
+    agent_name = conversation.assignee&.name || conversation.account.name
+
+    conversation.messages.create!({
+                                    account_id: conversation.account_id,
+                                    inbox_id: conversation.inbox_id,
+                                    message_type: :outgoing,
+                                    content_type: :text,
+                                    content: "#{agent_name} is sending a nudge",
+                                    # content_attributes: {
+                                    #   type: 'dyte'
+                                    # },
+                                    sender: conversation.contact
+                                  })
+
+    render json: {
+      'message': 'nodge created',
+      'conversation': conversation
     }, status: :ok
   end
 end

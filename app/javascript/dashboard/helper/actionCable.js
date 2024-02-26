@@ -232,6 +232,58 @@ class ActionCableConnector extends BaseActionCableConnector {
           'camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;';
         iframe.allowFullscreen = true;
 
+        // nudge button
+        const nudgeButton = document.createElement('button');
+        nudgeButton.innerText = 'Nudge Customer';
+        nudgeButton.style.position = 'fixed';
+        nudgeButton.style.top = '50px';
+        nudgeButton.style.right = '100px';
+        nudgeButton.style.zIndex = '10000';
+        nudgeButton.style.padding = '10px';
+        nudgeButton.style.border = 'none';
+        nudgeButton.style.borderRadius = '5px';
+        nudgeButton.style.color = 'white';
+        nudgeButton.style.backgroundColor = 'green';
+        nudgeButton.style.cursor = 'pointer';
+        // style the nudgeButton if disabled
+
+
+        // nudge event listener
+        nudgeButton.addEventListener('click', () => {
+          console.log('Nudge Customer');
+
+
+          const nudgeUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting/nudge`
+          console.log('nudgeUrl', nudgeUrl)
+          // create the nudge message
+          fetch(nudgeUrl,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                accept: 'application/json, text/plain, */*',
+                'access-token': accessToken,
+                'token-type': tokenType,
+                client,
+                expiry,
+                uid,
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              console.log('Nudge message sent');
+              console.log(data, '__data__')
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+
+
+        });
+        iframeContainer.appendChild(nudgeButton);
+
+
+
         iframeCloseButton.addEventListener('click', () => {
           iframeContainer.remove();
         });

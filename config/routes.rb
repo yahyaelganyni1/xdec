@@ -81,7 +81,12 @@ Rails.application.routes.draw do
               post :filter
             end
             scope module: :conversations do
-              resources :jitsi_meeting, only: [:index, :create]
+              # resources :jitsi_meeting, only: [:index, :create]
+              resources :jitsi_meeting, only: [:index, :create] do
+                collection do
+                  post :nudge
+                end
+              end
               resources :messages, only: [:index, :create, :destroy] do
                 member do
                   post :translate
