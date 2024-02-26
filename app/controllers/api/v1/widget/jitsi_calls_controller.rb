@@ -1,4 +1,4 @@
-class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # rubocop:disable Metrics/ClassLength
+class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
   before_action :set_conversation, only: [:create, :index]
   before_action :set_message, only: [:update] # rubocop:disable Rails/LexicallyScopedActionFilter
   before_action :set_meeting_url
@@ -24,73 +24,99 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
   # start the call from the agent side (from the cesco side)
   def create # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
     require 'httparty'
+    require 'json'
     # the cesco server url
     url = ENV.fetch('CISCO_FINESSE_URL')
 
     meentin_name = meeting_url(@conversation.inbox_id, @conversation.contact.email, @conversation.display_id, @conversation.contact.name)
     auth_token = request.headers['X-Auth-Token']
 
+    body1 = {
+      'name': @conversation.contact.name,
+      'auth_token': auth_token,
+      'assignee_id': @conversation.assignee_id
+    }
+
+    p '_______________url_____________'
+    p url
+    p '_______________body1_____________'
+    p body1.to_json
+    p '_______________auth_token_____________'
+
+    response = HTTParty.post(url,
+                             body: {
+                               'name': @conversation.contact.name,
+                               'auth_token': auth_token,
+                               'assignee_id': @conversation.assignee_id
+
+                             }.to_json,
+                             headers: { 'Content-Type' => 'application/json' })
+
+    #  headers: { 'Content-Type' => 'application/xml' }
+    #  basic_auth: { username: ENV.fetch('CISCO_FINESSE_USERNAME'),
+    #                password: ENV.fetch('CISCO_FINESSE_PASSWORD') }
+
     # finees_request(auth_token)
 
-    auth_length = auth_token.length
+    # auth_length = auth_token.length
     #  slice the auth token into 4 segments for the cesco xml can take it
-    segment_length = auth_length / 4
+    # segment_length = auth_length / 4
 
-    auth_token_1 = auth_token.slice(0, segment_length.ceil)
+    # auth_token_1 = auth_token.slice(0, segment_length.ceil)
 
-    auth_token_2 = auth_token.slice(segment_length.ceil, segment_length.ceil)
+    # auth_token_2 = auth_token.slice(segment_length.ceil, segment_length.ceil)
 
-    auth_token_3 = auth_token.slice(segment_length.ceil * 2, segment_length.ceil)
+    # auth_token_3 = auth_token.slice(segment_length.ceil * 2, segment_length.ceil)
 
-    auth_token_4 = auth_token.slice(segment_length.ceil * 3, segment_length.ceil)
+    # auth_token_4 = auth_token.slice(segment_length.ceil * 3, segment_length.ceil)
 
     # the xml body that will be sent to the cesco server
-    xml_body = "
-    <Task>
-    <name>John Doe1</name>
-    <title>Help with not my phone</title>
-    <description>This is my description</description>
-    <scriptSelector>CumulusTask</scriptSelector>
-    <requeueOnRecovery>true</requeueOnRecovery>
-    <tags>
-        <tag>phone</tag>
-        <tag>sss</tag>
-    </tags>
-    <variables>
-        <!-- Below two fields are optional fields.
-       1) include mediaType to indicate the media type attribute of
-          POD when it is created.
-       2) If podRefURL is passed then POD creation will be skipped
-          for this contact.
-    <variable><name>mediaType</name><value>chat</value></variable><variable><name>podRefURL</name><value>https://context-service.rciad.ciscoccservice.com/context/
-      pod/v1/podId/b066c3c0-c346-11e5-b3dd-3f1450b33459</value></variable>  -->
-      <variable>
-          <name>cv_1</name>
-          <value>#{auth_token_1}</value>
-      </variable>
-      <variable>
-            <name>cv_2</name>
-            <value>#{auth_token_2}</value>
-      </variable>
-      <variable>
-              <name>cv_3</name>
-              <value>#{auth_token_3}</value>
-    </variable>
-    <variable>
-            <name>cv_4</name>
-            <value>#{auth_token_4}</value>
-    </variable>
-    <variable>
-        <name>user_(eccVariableName)</name>
-        <value>eccVariableValue</value>
-    </variable>
-    <variable>
-        <name>anythingElseExtensionFieldName</name>
-        <value>anythingElseExtensionFieldValue</value>
-    </variable>
-  </variables>
-</Task>
-    "
+    #     xml_body = "
+    #     <Task>
+    #     <name>John Doe1</name>
+    #     <title>Help with not my phone</title>
+    #     <description>This is my description</description>
+    #     <scriptSelector>CumulusTask</scriptSelector>
+    #     <requeueOnRecovery>true</requeueOnRecovery>
+    #     <tags>
+    #         <tag>phone</tag>
+    #         <tag>sss</tag>
+    #     </tags>
+    #     <variables>
+    #         <!-- Below two fields are optional fields.
+    #        1) include mediaType to indicate the media type attribute of
+    #           POD when it is created.
+    #        2) If podRefURL is passed then POD creation will be skipped
+    #           for this contact.
+    #     <variable><name>mediaType</name><value>chat</value></variable><variable><name>podRefURL</name><value>https://context-service.rciad.ciscoccservice.com/context/
+    #       pod/v1/podId/b066c3c0-c346-11e5-b3dd-3f1450b33459</value></variable>  -->
+    #       <variable>
+    #           <name>cv_1</name>
+    #           <value>#{auth_token_1}</value>
+    #       </variable>
+    #       <variable>
+    #             <name>cv_2</name>
+    #             <value>#{auth_token_2}</value>
+    #       </variable>
+    #       <variable>
+    #               <name>cv_3</name>
+    #               <value>#{auth_token_3}</value>
+    #     </variable>
+    #     <variable>
+    #             <name>cv_4</name>
+    #             <value>#{auth_token_4}</value>
+    #     </variable>
+    #     <variable>
+    #         <name>user_(eccVariableName)</name>
+    #         <value>eccVariableValue</value>
+    #     </variable>
+    #     <variable>
+    #         <name>anythingElseExtensionFieldName</name>
+    #         <value>anythingElseExtensionFieldValue</value>
+    #     </variable>
+    #   </variables>
+    # </Task>
+    #     "
 
     # response = HTTParty.post(url,
     #                          body: xml_body,
@@ -235,12 +261,12 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
                                    })
 
     # task status requsest to check the status of the task before cancelling the task
-    response_status = HTTParty.get(url,
-                                   basic_auth: { username: 'administrator', password: 'C1sco12345' })
+    # response_status = HTTParty.get(url,
+    #                                basic_auth: { username: 'administrator', password: 'C1sco12345' })
 
-    xml_data = response_status.body
+    # xml_data = response_status.body
 
-    doc = Nokogiri::XML(xml_data)
+    # doc = Nokogiri::XML(xml_data)
     # check the status of the task and take action based on the status
     # if the status is reserved then we need to close the task
     # if doc.at_css('status')&.content == 'reserved' && !doc.at_css('status')&.content.nil?
@@ -257,14 +283,14 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
 
     render json: {
       'message': 'meeting ended',
-      'Location': url,
-      'task_status_url': cancele_url,
-      'task_status': doc.at_css('status')&.content,
-      'task_id': task_id,
-      'task_status_response': response_status,
-      'task_status_response_body': response_status.body,
-      'task_status_response_code': response_status.code,
-      'task_status_response_message': response_status.message
+      'Location': url
+      # 'task_status_url': cancele_url,
+      # 'task_status': doc.at_css('status')&.content,
+      # 'task_id': task_id,
+      # 'task_status_response': response_status,
+      # 'task_status_response_body': response_status.body,
+      # 'task_status_response_code': response_status.code,
+      # 'task_status_response_message': response_status.message
 
     }, status: :ok
   end

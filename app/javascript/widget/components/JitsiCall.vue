@@ -111,46 +111,46 @@ export default {
         },
         leaveTheRoom() {
             this.dyteAuthToken = '';
-            // this.isOpen = false;
-            try {
-                const search = buildSearchParamsWithLocale(window.location.search);
-                const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
-                const urlLocation = window.location.href;
-                const xAuthToken = window.authToken;
-                const url = `${baseUrl}/api/v1/widget/jitsi_calls/end_call${search}`;
-                const os = navigator.platform.split(' ')[0];
-                console.log(url, 'url')
-                console.log(this.taskLocation, 'taskLocation')
-                console.log('==--leave the room--==')
-                fetch(url,
+            this.isOpen = false;
+            // try {
+            //     const search = buildSearchParamsWithLocale(window.location.search);
+            //     const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
+            //     const urlLocation = window.location.href;
+            //     const xAuthToken = window.authToken;
+            //     const url = `${baseUrl}/api/v1/widget/jitsi_calls/end_call${search}`;
+            //     const os = navigator.platform.split(' ')[0];
+            //     console.log(url, 'url')
+            //     console.log(this.taskLocation, 'taskLocation')
+            //     console.log('==--leave the room--==')
+            //     fetch(url,
 
-                    {
-                        "headers": {
-                            "accept": "application/json, text/plain, */*",
-                            "accept-language": "en-US,en;q=0.9,ar;q=0.8",
-                            "content-type": "application/json",
-                            "sec-ch-ua": "\"Google Chrome\";v=\"119\", \"Chromium\";v=\"119\", \"Not?A_Brand\";v=\"24\"",
-                            "sec-ch-ua-mobile": "?0",
-                            "sec-ch-ua-platform": `"${os}"`,
-                            "sec-fetch-dest": "empty",
-                            "sec-fetch-mode": "cors",
-                            "sec-fetch-site": "same-origin",
-                            "x-auth-token": xAuthToken,
-                        },
-                        "body": JSON.stringify({ task_location: this.taskLocation }),
-                        "referrer": urlLocation,
-                        "method": "DELETE",
-                        "mode": "cors",
-                        "credentials": "omit",
-                        "body": JSON.stringify({ "Location": this.taskLocation })
-                    }).then(response => response.json())
-                    .then(data => {
-                        console.log('meeting has been ended successfully', data);
-                        this.isOpen = false;
-                    })
-            } catch (error) {
-                console.log('error', error);
-            }
+            //         {
+            //             "headers": {
+            //                 "accept": "application/json, text/plain, */*",
+            //                 "accept-language": "en-US,en;q=0.9,ar;q=0.8",
+            //                 "content-type": "application/json",
+            //                 "sec-ch-ua": "\"Google Chrome\";v=\"119\", \"Chromium\";v=\"119\", \"Not?A_Brand\";v=\"24\"",
+            //                 "sec-ch-ua-mobile": "?0",
+            //                 "sec-ch-ua-platform": `"${os}"`,
+            //                 "sec-fetch-dest": "empty",
+            //                 "sec-fetch-mode": "cors",
+            //                 "sec-fetch-site": "same-origin",
+            //                 "x-auth-token": xAuthToken,
+            //             },
+            //             "body": JSON.stringify({ task_location: this.taskLocation }),
+            //             "referrer": urlLocation,
+            //             "method": "DELETE",
+            //             "mode": "cors",
+            //             "credentials": "omit",
+            //             "body": JSON.stringify({ "Location": this.taskLocation })
+            //         }).then(response => response.json())
+            //         .then(data => {
+            //             console.log('meeting has been ended successfully', data);
+            //             this.isOpen = false;
+            //         })
+            // } catch (error) {
+            //     console.log('error', error);
+            // }
 
         },
     },
