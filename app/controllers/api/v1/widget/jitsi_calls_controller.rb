@@ -92,29 +92,29 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
 </Task>
     "
 
-    response = HTTParty.post(url,
-                             body: xml_body,
-                             headers: { 'Content-Type' => 'application/xml' },
-                             basic_auth: { username: ENV.fetch('CISCO_FINESSE_USERNAME'),
-                                           password: ENV.fetch('CISCO_FINESSE_PASSWORD') })
+    # response = HTTParty.post(url,
+    #                          body: xml_body,
+    #                          headers: { 'Content-Type' => 'application/xml' },
+    #                          basic_auth: { username: ENV.fetch('CISCO_FINESSE_USERNAME'),
+    #                                        password: ENV.fetch('CISCO_FINESSE_PASSWORD') })
 
-    unless response.success?
-      render json: { 'error': 'Request to Cisco server failed' }, status: :internal_server_error
-      @conversation.messages.create!({
-                                       content: 'Request to Cisco server failed',
-                                       content_type: :text,
-                                       account_id: @conversation.account_id,
-                                       inbox_id: @conversation.inbox_id,
-                                       message_type: :incoming,
-                                       private: false,
-                                       content_attributes: {
-                                         type: 'text'
-                                       },
-                                       sender: @conversation.contact
-                                     })
+    # unless response.success?
+    #   render json: { 'error': 'Request to Cisco server failed' }, status: :internal_server_error
+    #   @conversation.messages.create!({
+    #                                    content: 'Request to Cisco server failed',
+    #                                    content_type: :text,
+    #                                    account_id: @conversation.account_id,
+    #                                    inbox_id: @conversation.inbox_id,
+    #                                    message_type: :incoming,
+    #                                    private: false,
+    #                                    content_attributes: {
+    #                                      type: 'text'
+    #                                    },
+    #                                    sender: @conversation.contact
+    #                                  })
 
-      return
-    end
+    #   return
+    # end
 
     @conversation.messages.create!({
                                      content: "#{conversation.contact.name} requested a video call",
@@ -209,7 +209,7 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
   end
 
   #  to end the call from the customer side
-  def end_call # rubocop:disable Metrics/MethodLength,Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+  def end_call # rubocop:disable Metrics/MethodLength
     require 'httparty'
     require 'nokogiri'
 
@@ -243,17 +243,17 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
     doc = Nokogiri::XML(xml_data)
     # check the status of the task and take action based on the status
     # if the status is reserved then we need to close the task
-    if doc.at_css('status')&.content == 'reserved' && !doc.at_css('status')&.content.nil?
-      HTTParty.put(cancele_url,
-                   headers: { 'Content-Type' => 'application/xml' },
-                   basic_auth: { username: 'administrator', password: 'C1sco12345' })
-    elsif doc.at_css('status')&.content == 'queued' && !doc.at_css('status')&.content.nil?
-      HTTParty.delete(url,
-                      headers: { 'Content-Type' => 'application/xml' },
-                      basic_auth: { username: 'administrator', password: 'C1sco12345' })
-    else
-      p 'task is not reserved or queued'
-    end
+    # if doc.at_css('status')&.content == 'reserved' && !doc.at_css('status')&.content.nil?
+    #   HTTParty.put(cancele_url,
+    #                headers: { 'Content-Type' => 'application/xml' },
+    #                basic_auth: { username: 'administrator', password: 'C1sco12345' })
+    # elsif doc.at_css('status')&.content == 'queued' && !doc.at_css('status')&.content.nil?
+    #   HTTParty.delete(url,
+    #                   headers: { 'Content-Type' => 'application/xml' },
+    #                   basic_auth: { username: 'administrator', password: 'C1sco12345' })
+    # else
+    #   p 'task is not reserved or queued'
+    # end
 
     render json: {
       'message': 'meeting ended',
