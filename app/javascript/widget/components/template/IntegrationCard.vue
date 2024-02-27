@@ -59,12 +59,13 @@ export default {
     async joinTheCall() {
       this.isLoading = true;
       this.isOpen = true;
-      console.log(this.meetingData, '=========meetingData===========')
       const username = this.$store.getters["contacts/getCurrentUser"].name
+      console.log(username, '=========username===========')
       try {
-        createIframe(this.meetingLink, username)
+        createIframe("this.meetingLink", username)
       } catch (error) {
         // Ignore Error for now
+        console.error(error);
       } finally {
         this.isLoading = false;
       }

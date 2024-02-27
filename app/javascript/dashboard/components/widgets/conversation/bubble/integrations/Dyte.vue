@@ -101,6 +101,9 @@ export default {
 
       this.isLoading = true;
       this.isOpen = true;
+      // const agentName = this.$store.getters["contacts/getCurrentUser"].name
+      const agentName = this.$store.getters["agents/getAgents"][0].available_name
+      console.log(agentName, '=========agentName===========')
       const {
         'access-token': accessToken,
         'token-type': tokenType,
@@ -111,7 +114,7 @@ export default {
       const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
       const accountId = window.location.href.split('/').slice(5, 6).join('/');
       const conversationId = window.location.href.split('/').slice(7, 8).join('/');
-      const fullUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting`;
+      const fullUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting?username=${agentName}`;
       try {
         fetch(fullUrl, {
           method: 'GET',

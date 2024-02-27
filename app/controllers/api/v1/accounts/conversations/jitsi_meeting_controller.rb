@@ -6,15 +6,18 @@ class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accoun
     # get the username from the params
 
     username = params[:username]
+
+    meeting_url = meeting_url(
+      conversation.inbox_id,
+      conversation.contact.email,
+      conversation.display_id,
+      conversation.contact.name,
+      username
+    )
+
     render json: {
       'conversation_id': conversation.display_id,
-      'meeting_url': meeting_url(
-        conversation.inbox_id,
-        conversation.contact.email,
-        conversation.display_id,
-        conversation.contact.name,
-        username
-      )
+      'meeting_url': meeting_url
     }, status: :ok
   end
 

@@ -2,6 +2,9 @@ module JitsiMeetingLink
   JITSI_SERVER_URL = ENV.fetch('JITSI_SERVER_URL')
 
   def meeting_url(inbox_id, contact_email, conversation_id, contact_name, username)
+    username = contact_name if username.nil?
+
+    # Rest of the code...
     payload = {
       'context' => {
         'user' => {
