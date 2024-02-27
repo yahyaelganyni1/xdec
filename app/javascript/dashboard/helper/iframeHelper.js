@@ -1,6 +1,8 @@
 import Auth from '../api/auth';
 
-export const createIframe = (data) => {
+export const createIframe = (data, agentName) => {
+    console.log(data, '==data==')
+
     const {
         'access-token': accessToken,
         'token-type': tokenType,
@@ -11,7 +13,8 @@ export const createIframe = (data) => {
     const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
     const accountId = data.account_id;
     const conversationId = data.conversation_id;
-    const fullUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting`;
+    console.log(agentName, '==agentName==')
+    const fullUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting?username=${agentName}`;
     const iframe = document.createElement('iframe');
     iframe.classList.add('video-call-iframe');
 

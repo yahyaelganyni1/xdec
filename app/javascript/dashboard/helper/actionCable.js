@@ -121,8 +121,10 @@ class ActionCableConnector extends BaseActionCableConnector {
   onMessageCreated = data => {
     const assigneeId = data.conversation.assignee_id;
     const currentUserId = this.app.$store.getters.getCurrentUserID;
+    const store = this.app.$store;
     const openIframes = document.querySelectorAll('iframe');
-
+    const agentName = this.app.$store.getters["agents/getAgents"][0].available_name
+    console.log(store, '==store==')
     if (
       data.content_type === 'integrations' &&
       data.message_type === 1 &&
@@ -130,7 +132,7 @@ class ActionCableConnector extends BaseActionCableConnector {
       openIframes.length === 0 &&
       assigneeId === currentUserId
     ) {
-      createIframe(data)
+      createIframe(data, agentName);
     }
     const {
       conversation: { last_activity_at: lastActivityAt },

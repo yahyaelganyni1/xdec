@@ -3,14 +3,17 @@ class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accoun
 
   def index
     conversation = @conversation
+    # get the username from the params
 
+    username = params[:username]
     render json: {
       'conversation_id': conversation.display_id,
       'meeting_url': meeting_url(
         conversation.inbox_id,
         conversation.contact.email,
         conversation.display_id,
-        conversation.contact.name
+        conversation.contact.name,
+        username
       )
     }, status: :ok
   end
@@ -34,7 +37,8 @@ class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accoun
         conversation.inbox_id,
         conversation.contact.email,
         conversation.display_id,
-        conversation.contact.name
+        conversation.contact.name,
+        conversation.assignee&.name
       )
     }, status: :ok
   end

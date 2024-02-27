@@ -37,15 +37,9 @@ export const shake = (element, duration = 90, intensity = 25, iterations = 6) =>
     // Return the animation
 
     return animation;
-
-
-
 }
 
-
-
-
-export const createIframe = () => {
+export const createIframe = (data, customerName = 'client') => {
     const iframeContainer = document.createElement('div');
     iframe.className = 'iframe-popup';
     console.log('iframe', iframe)
@@ -60,7 +54,8 @@ export const createIframe = () => {
     const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
     const urlLocation = window.location.href;
     const xAuthToken = window.authToken;
-    const url = `${baseUrl}/api/v1/widget/jitsi_calls${search}`;
+    const username = customerName
+    const url = `${baseUrl}/api/v1/widget/jitsi_calls${search}&username=${username}`;
     const os = navigator.platform.split(' ')[0];
 
     fetch(url, {
@@ -84,11 +79,6 @@ export const createIframe = () => {
         .then(data => {
             const meetingUrl = data.message.meeting_url;
             console.log('meetingUrl====', data.message.meeting_url);
-            // isOpen = true;
-            // Access the iframe src here
-            // const iframeSrc = meetingUrl;
-            // console.log('iframeSrc', iframeSrc)
-            // Use the iframeSrc as needed
             iframe.src = meetingUrl;
         });
     // Set the position and z-index of the iframe
@@ -116,8 +106,8 @@ export const createIframe = () => {
 
     leaveButton.innerText = 'Leave Call';
     leaveButton.style.position = 'fixed';
-    leaveButton.style.top = '10px';
-    leaveButton.style.right = '10px';
+    leaveButton.style.top = '15px';
+    leaveButton.style.right = '70px';
     leaveButton.style.zIndex = '10000';
     leaveButton.style.padding = '10px';
     leaveButton.style.border = 'none';

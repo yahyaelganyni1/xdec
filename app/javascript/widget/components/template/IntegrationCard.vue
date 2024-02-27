@@ -59,69 +59,10 @@ export default {
     async joinTheCall() {
       this.isLoading = true;
       this.isOpen = true;
-
+      console.log(this.meetingData, '=========meetingData===========')
+      const username = this.$store.getters["contacts/getCurrentUser"].name
       try {
-        createIframe()
-
-        // const search = buildSearchParamsWithLocale(window.location.search);
-        // const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
-        // const urlLocation = window.location.href;
-        // const xAuthToken = window.authToken;
-        // const url = `${baseUrl}/api/v1/widget/jitsi_calls${search}`;
-        // const os = navigator.platform.split(' ')[0];
-        // fetch(url, {
-        //   "headers": {
-        //     "accept": "application/json, text/plain, */*",
-        //     "accept-language": "en-US,en;q=0.9,ar;q=0.8",
-        //     "content-type": "application/json",
-        //     "sec-ch-ua": "\"Google Chrome\";v=\"119\", \"Chromium\";v=\"119\", \"Not?A_Brand\";v=\"24\"",
-        //     "sec-ch-ua-mobile": "?0",
-        //     "sec-ch-ua-platform": `"${os}"`,
-        //     "sec-fetch-dest": "empty",
-        //     "sec-fetch-mode": "cors",
-        //     "sec-fetch-site": "same-origin",
-        //     "x-auth-token": xAuthToken,
-        //   },
-        //   "referrer": urlLocation,
-        //   "method": "GET",
-        //   "mode": "cors",
-        //   "credentials": "omit"
-        // }).then(response => response.json())
-        //   .then(data => {
-        //     console.log(data, '====================');
-        //     this.meetingUrl = data.message.meeting_url
-        //     const iframe = document.createElement('iframe');
-        //     iframe.src = this.meetingUrl;
-        //     iframe.allow = "camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;";
-        //     iframe.style.width = '100%';
-        //     iframe.style.height = '100%';
-        //     iframe.style.border = '0';
-        //     iframe.style.position = 'fixed';
-        //     iframe.style.top = '0';
-        //     iframe.style.left = '0';
-        //     iframe.style.bottom = '0';
-        //     iframe.style.right = '0';
-        //     iframe.style.zIndex = '9999';
-        //     iframe.style.boxSizing = 'border-box !important';
-        //     const leaveButton = document.createElement('button');
-        //     // add class to button leave-room-button
-        //     leaveButton.className = 'button small join-call-button leave-room-button';
-        //     leaveButton.innerText = 'End Call';
-        //     leaveButton.innerText = 'Leave Call';
-        //     leaveButton.style.position = 'fixed';
-        //     leaveButton.style.top = '10px';
-        //     leaveButton.style.right = '10px';
-        //     leaveButton.style.zIndex = '10000';
-        //     leaveButton.style.padding = '10px';
-        //     leaveButton.style.border = 'none';
-        //     leaveButton.style.borderRadius = '5px';
-        //     leaveButton.style.color = 'white';
-        //     leaveButton.style.backgroundColor = 'red';
-
-        //     leaveButton.addEventListener('click', this.leaveTheRoom);
-        //     document.body.appendChild(leaveButton);
-        //     document.body.appendChild(iframe);
-        //   })
+        createIframe(this.meetingLink, username)
       } catch (error) {
         // Ignore Error for now
       } finally {

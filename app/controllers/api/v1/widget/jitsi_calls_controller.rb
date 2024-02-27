@@ -1,21 +1,28 @@
-class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # rubocop:disable Layout/EndOfLine
+class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
   before_action :set_conversation, only: [:create, :index]
   before_action :set_message, only: [:update] # rubocop:disable Rails/LexicallyScopedActionFilter
-  before_action :set_meeting_url
+  # before_action :set_meeting_url
   include JitsiMeetingLink
 
   def index
     conversation = @conversation
-
+    # get the username from the params
+    username = params[:username]
     render json: {
       'message': {
-        'meeting_url': @meeting_name,
+        'meeting_url': meeting_url(
+          conversation.inbox_id,
+          conversation.contact.email,
+          conversation.display_id,
+          conversation.contact.name,
+          username
+        ),
         'contact_name': conversation.contact.name,
         'conversation_id': conversation.display_id,
         'contact_email': conversation.contact.email,
-        'assignee_id': conversation.assignee_id
+        'assignee_id': conversation.assignee_id,
+        'username': username
       }
-
     }, status: :ok
   end
 
@@ -73,7 +80,7 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
       return
     end
 
-    @conversation.update!(assignee_id: assignee_id) # if assignee_id.present? && @conversation.assignee_id != assignee_id
+    conversation.update!(assignee_id: assignee_id) # if assignee_id.present? && @conversation.assignee_id != assignee_id
 
     agent_name = @conversation.assignee&.name
 
@@ -92,7 +99,14 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
 
     render json: {
       'message': {
-        'meeting_url': @meeting_name,
+        'meeting_url': meeting_url(
+          @conversation.inbox_id,
+          @conversation.contact.email,
+          @conversation.display_id,
+          @conversation.contact.name,
+          @conversation.assignee&.name
+        ),
+
         'contact_name': conversation.contact.name,
         'conversation_id': conversation.display_id,
         'contact_email': conversation.contact.email,
@@ -167,12 +181,12 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
   end
 
   # creating a uneque and unfined meeting link between the agent and the customer
-  def set_meeting_url
-    @meeting_name = meeting_url(
-      conversation.inbox_id,
-      conversation.contact.email,
-      conversation.display_id,
-      conversation.contact.name
-    )
-  end
+  # def set_meeting_url
+  #   @meeting_name = meeting_url(
+  #     conversation.inbox_id,
+  #     conversation.contact.email,
+  #     conversation.display_id,
+  #     conversation.contact.name
+  #   )
+  # end
 end

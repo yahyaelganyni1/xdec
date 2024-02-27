@@ -59,7 +59,10 @@ class ActionCableConnector extends BaseActionCableConnector {
     console.log(data)
     const popupIframe = document.querySelectorAll('.iframe-popup');
     // const dyteIframe = document.querySelectorAll('.dyte');
+    const customerName = data.sender.name
+    const store = this.app.$store;
 
+    console.log(store, '==store==')
     if (data.content.includes('is sending a nudge')) {
       shake(popupIframe[0])
     }
@@ -70,7 +73,7 @@ class ActionCableConnector extends BaseActionCableConnector {
       data.content.includes('accepted the video call') &&
       popupIframe.length === 0
     ) {
-      createIframe();
+      createIframe(data, customerName);
     }
 
     if (isMessageInActiveConversation(this.app.$store.getters, data)) {
