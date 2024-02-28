@@ -121,14 +121,20 @@ class ActionCableConnector extends BaseActionCableConnector {
   onMessageCreated = data => {
     const assigneeId = data.conversation.assignee_id;
     const currentUserId = this.app.$store.getters.getCurrentUserID;
-    const store = this.app.$store;
-    const openIframes = document.querySelectorAll('iframe');
+    // const store = this.app.$store;
+    const openIframes = document.querySelectorAll('.iframe');
     const agentName = this.app.$store.getters["agents/getAgents"][0].available_name
-    console.log(store, '==store==')
+
+    console.log(
+      `assigneeId: ${assigneeId},
+      currentUserId: ${currentUserId},
+        openIframes: ${openIframes.length},
+       agentName: ${agentName}`
+    )
+
     if (
       data.content_type === 'integrations' &&
       data.message_type === 1 &&
-      // !popupModalClass &&
       openIframes.length === 0 &&
       assigneeId === currentUserId
     ) {

@@ -52,10 +52,11 @@ export default {
 
   methods: {
     async joinTheCall() {
-      this.isLoading = true;
       this.isOpen = true;
+      this.isLoading = false;
       const username = this.$store.getters["contacts/getCurrentUser"].name
       console.log(username, '=========username===========')
+      console.log('this is the new version of the code')
       try {
         createIframe("this.meetingLink", username)
       } catch (error) {
