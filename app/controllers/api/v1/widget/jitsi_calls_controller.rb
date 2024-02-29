@@ -1,4 +1,4 @@
-class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # rubocop:disable Layout/EndOfLine
+class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
   before_action :set_conversation, only: [:create, :index]
   before_action :set_message, only: [:update] # rubocop:disable Rails/LexicallyScopedActionFilter
   # before_action :set_meeting_url
@@ -31,7 +31,6 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
     require 'httparty'
     require 'json'
     # the cesco server url
-    url = ENV.fetch('CISCO_FINESSE_URL')
 
     meentin_name = meeting_url(@conversation.inbox_id,
                                @conversation.contact.email,
@@ -52,6 +51,7 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
                                    })
 
     auth_token = request.headers['X-Auth-Token']
+    url = ENV.fetch('CISCO_FINESSE_URL')
 
     response = HTTParty.post(url,
                              verify: false,
@@ -155,6 +155,10 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
   def end_call
     url = params[:Location]
 
+    # resolve call when ending
+
+    @conversation.update!(status: 'resolved')
+
     contact_name = @conversation.contact.name
     # send a message in the chat from the customer side that the call is ended
     @conversation.messages.create!({
@@ -186,14 +190,4 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
   def set_message
     @message = @web_widget.inbox.messages.find(permitted_params[:id])
   end
-
-  # creating a uneque and unfined meeting link between the agent and the customer
-  # def set_meeting_url
-  #   @meeting_name = meeting_url(
-  #     conversation.inbox_id,
-  #     conversation.contact.email,
-  #     conversation.display_id,
-  #     conversation.contact.name
-  #   )
-  # end
 end

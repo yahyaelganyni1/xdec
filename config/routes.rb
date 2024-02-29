@@ -84,6 +84,7 @@ Rails.application.routes.draw do
               resources :jitsi_meeting, only: [:index, :create] do
                 collection do
                   post :nudge
+                  delete :end_call
                 end
               end
               resources :messages, only: [:index, :create, :destroy] do

@@ -51,15 +51,13 @@ export const createIframe = (data, agentName) => {
 
     const leaveButton = document.createElement('button');
     leaveButton.innerText = 'Leave Call';
-    leaveButton.style.position = 'fixed';
-    leaveButton.style.top = '10px';
-    leaveButton.style.right = '10px';
-    leaveButton.style.zIndex = '10000';
+
     leaveButton.style.padding = '10px';
     leaveButton.style.border = 'none';
     leaveButton.style.borderRadius = '5px';
     leaveButton.style.color = 'white';
     leaveButton.style.backgroundColor = 'red';;
+    leaveButton.style.cursor = 'pointer';
     iframe.style.width = '100%';
     iframe.style.height = '100vh';
     iframe.style.border = 'none';
@@ -69,29 +67,61 @@ export const createIframe = (data, agentName) => {
 
     leaveButton.addEventListener('click', () => {
         iframeContainer.remove();
+        const endUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting/end_call`
+
+        fetch(endUrl,
+            {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    accept: 'application/json, text/plain, */*',
+                    'access-token': accessToken,
+                    'token-type': tokenType,
+                    client,
+                    expiry,
+                    uid,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Call ended');
+                console.log(data, '__data__')
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
     });
 
 
     // nudge button
     const nudgeButton = document.createElement('button');
     nudgeButton.innerText = 'Nudge Customer';
-    nudgeButton.style.position = 'fixed';
-    nudgeButton.style.top = '10px';
-    nudgeButton.style.right = '100px';
+    // nudgeButton.style.position = 'fixed';
+    // nudgeButton.style.top = '10px';
+    // nudgeButton.style.right = '100px';
     nudgeButton.style.zIndex = '10000';
     nudgeButton.style.padding = '10px';
-    nudgeButton.style.border = 'none';
-    nudgeButton.style.borderRadius = '5px';
+    nudgeButton.style.border =
+        nudgeButton.style.borderRadius = '5px';
     nudgeButton.style.color = 'white';
     nudgeButton.style.backgroundColor = 'green';
-    nudgeButton.style.cursor = 'pointer';
-    // style the nudgeButton if disabled
+    nudgeButton.style.cursor = 'pointer'
+
+    const disableButton = (button, time) => {
+        button.disabled = true;
+        nudgeButton.style.backgroundColor = 'grey';
+        setTimeout(() => {
+            button.disabled = false;
+            nudgeButton.style.backgroundColor = 'green';
+        }, time);
+    };
 
 
     // nudge event listener
     nudgeButton.addEventListener('click', () => {
-        console.log('Nudge Customer');
 
+        disableButton(nudgeButton, 2000);
 
         const nudgeUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting/nudge`
         console.log('nudgeUrl', nudgeUrl)
@@ -120,11 +150,22 @@ export const createIframe = (data, agentName) => {
 
 
     });
-    iframeContainer.appendChild(nudgeButton);
 
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.style.display = 'flex';
+    buttonsContainer.style.justifyContent = 'center';
+    buttonsContainer.style.position = 'fixed';
+    buttonsContainer.style.top = '10px';
+    buttonsContainer.style.left = '30px';
+    buttonsContainer.style.width = '50%';
+    buttonsContainer.style.zIndex = '10001';
 
+    buttonsContainer.classList.add('buttons-container');
 
-    iframeContainer.appendChild(leaveButton);
+    buttonsContainer.appendChild(nudgeButton);
+    buttonsContainer.appendChild(leaveButton);
+    iframeContainer.appendChild(buttonsContainer);
+
     iframeContainer.appendChild(iframe);
     document.body.appendChild(iframeContainer);
 };

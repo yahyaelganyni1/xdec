@@ -1,4 +1,4 @@
-class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accounts::Conversations::BaseController # rubocop:disable Layout/EndOfLine
+class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accounts::Conversations::BaseController
   include JitsiMeetingLink
 
   def index
@@ -43,6 +43,27 @@ class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accoun
         conversation.contact.name,
         conversation.assignee&.name
       )
+    }, status: :ok
+  end
+
+  def end_call
+    conversation = @conversation
+
+    # resolve the conversation
+
+    conversation.update!(status: 'resolved')
+
+    conversation.messages.create!({
+                                    account_id: conversation.account_id,
+                                    inbox_id: conversation.inbox_id,
+                                    message_type: :outgoing,
+                                    content_type: :text,
+                                    content: 'Video call ended'
+                                  })
+
+    render json: {
+      'message': 'call ended',
+      'conversation': conversation
     }, status: :ok
   end
 
