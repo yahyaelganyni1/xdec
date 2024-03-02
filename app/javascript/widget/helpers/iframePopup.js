@@ -2,7 +2,7 @@ import { start } from 'turbolinks';
 import { buildSearchParamsWithLocale } from './urlParamsHelper'
 const iframe = document.createElement('iframe');
 
-export const shake = (element, duration = 90, intensity = 25, iterations = 6) => {
+export const shake = (element, duration = 70, intensity = 25, iterations = 6) => {
     console.log('test from shake function')
     console.log('element', element)
     // Get original position for accurate return

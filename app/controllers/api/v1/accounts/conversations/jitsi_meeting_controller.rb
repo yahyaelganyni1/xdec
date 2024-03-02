@@ -58,6 +58,7 @@ class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accoun
 
     call.end_call(Time.now) if call.present?
 
+
     # resolve the conversation
 
     conversation.update!(status: 'resolved')
@@ -74,6 +75,7 @@ class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accoun
       'message': 'call ended',
       'conversation': conversation,
       'call': call
+
     }, status: :ok
   end
 

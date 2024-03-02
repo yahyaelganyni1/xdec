@@ -33,10 +33,12 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
     # the cesco server url
     url = ENV.fetch('CISCO_FINESSE_URL')
 
+
     meentin_name = meeting_url(@conversation.inbox_id,
                                @conversation.contact.email,
                                @conversation.display_id,
                                @conversation.contact.name, '@conversation.assignee&.name')
+    
     auth_token = request.headers['X-Auth-Token']
 
     body_request = {
@@ -64,6 +66,7 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
                              }.to_json,
                              headers: { 'Content-Type' => 'application/json' })
 
+
     @conversation.messages.create!({
                                      content: "#{conversation.contact.name} requested a video call",
                                      content_type: :text,
@@ -76,6 +79,21 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
                                      },
                                      sender: @conversation.contact
                                    })
+
+    auth_token = request.headers['X-Auth-Token']
+    url = ENV.fetch('CISCO_FINESSE_URL')
+
+    response = HTTParty.post(url,
+                             verify: false,
+                             body: {
+                               'name': @conversation.contact.name,
+                               'auth_token': auth_token,
+                               'assignee_id': @conversation.assignee_id,
+                               'meeting_url': meentin_name,
+                               'conversation_id': @conversation.display_id,
+                               'contact_email': @conversation.contact.email
+                             }.to_json,
+                             headers: { 'Content-Type' => 'application/json' })
 
     render json: {
       'message': {
@@ -167,6 +185,10 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
   def end_call
     url = params[:Location]
 
+    # resolve call when ending
+
+    @conversation.update!(status: 'resolved')
+
     contact_name = @conversation.contact.name
     # send a message in the chat from the customer side that the call is ended
     @conversation.messages.create!({
@@ -198,14 +220,4 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
   def set_message
     @message = @web_widget.inbox.messages.find(permitted_params[:id])
   end
-
-  # creating a uneque and unfined meeting link between the agent and the customer
-  # def set_meeting_url
-  #   @meeting_name = meeting_url(
-  #     conversation.inbox_id,
-  #     conversation.contact.email,
-  #     conversation.display_id,
-  #     conversation.contact.name
-  #   )
-  # end
 end

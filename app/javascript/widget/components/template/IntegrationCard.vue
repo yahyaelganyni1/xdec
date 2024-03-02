@@ -8,13 +8,8 @@
       <fluent-icon icon="video-add" class="mr-2" />
       {{ $t('INTEGRATIONS.DYTE.CLICK_HERE_TO_JOIN') }}
     </button>
-    <!-- <div v-if="isOpen" class="video-call--container">
-      <iframe :src="meetingUrl"
-        allow="camera;microphone;fullscreen;display-capture;picture-in-picture;clipboard-write;" />
-      <button class="button small join-call-button leave-room-button" @click="leaveTheRoom">
-        {{ $t('INTEGRATIONS.DYTE.LEAVE_THE_ROOM') }}
-      </button>
-    </div> -->
+    <p v-if="isLoading">Loading......!!!!!!!!!!!!!!!!!!!!!</p>
+
   </div>
 </template>
 <script>
@@ -57,10 +52,11 @@ export default {
 
   methods: {
     async joinTheCall() {
-      this.isLoading = true;
       this.isOpen = true;
+      this.isLoading = false;
       const username = this.$store.getters["contacts/getCurrentUser"].name
       console.log(username, '=========username===========')
+      console.log('this is the new version of the code')
       try {
         createIframe("this.meetingLink", username)
       } catch (error) {

@@ -69,7 +69,9 @@ export const createIframe = (data, agentName) => {
 
     leaveButton.addEventListener('click', () => {
         iframeContainer.remove();
+      
         const endUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting/end_call?call_id=${callId}`
+
 
         fetch(endUrl,
             {
