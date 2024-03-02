@@ -4,8 +4,10 @@ class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accoun
   def index
     conversation = @conversation
     # get the username from the params
+    call = Call.create_call(conversation, conversation.assignee,
+                            conversation.contact.email, Time.now)
 
-    username = params[:username]
+    username = conversation.assignee ? params[:username] : ''
 
     meeting_url = meeting_url(
       conversation.inbox_id,
@@ -17,13 +19,12 @@ class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accoun
 
     render json: {
       'conversation_id': conversation.display_id,
+      'call_id': call.id,
       'meeting_url': meeting_url
     }, status: :ok
   end
 
   def create # rubocop:disable Metrics/MethodLength
-    @call = Call.create_call(@conversation, current_user, @conversation.contact_id, Time.now)
-
     conversation = @conversation
     conversation.messages.create!({
                                     account_id: conversation.account_id,
@@ -38,6 +39,7 @@ class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accoun
                                   })
     render json: {
       'conversation_id': conversation.display_id,
+      # 'call_id': @call.id,
       'meeting_url': meeting_url(
         conversation.inbox_id,
         conversation.contact.email,
@@ -49,11 +51,12 @@ class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accoun
   end
 
   def end_call
+    call_id = params[:call_id]
+
     conversation = @conversation
-    call = Call.find_call(conversation.id)
+    call = Call.find_call(call_id)
 
     call.end_call(Time.now) if call.present?
-
 
     # resolve the conversation
 
