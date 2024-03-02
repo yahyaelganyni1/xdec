@@ -2,7 +2,7 @@ import Auth from '../api/auth';
 
 export const createIframe = (data, agentName) => {
     console.log(data, '==data==')
-
+    let callId;
     const {
         'access-token': accessToken,
         'token-type': tokenType,
@@ -34,6 +34,8 @@ export const createIframe = (data, agentName) => {
         .then(response => response.json())
         .then(data => {
             iframe.src = data.meeting_url;
+            console.log(data, '__data__')
+            callId = data.call_id;
             console.log('meetingUrl====', data.meeting_url)
         })
         .catch(error => {
@@ -67,7 +69,9 @@ export const createIframe = (data, agentName) => {
 
     leaveButton.addEventListener('click', () => {
         iframeContainer.remove();
-        const endUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting/end_call`
+      
+        const endUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting/end_call?call_id=${callId}`
+
 
         fetch(endUrl,
             {
