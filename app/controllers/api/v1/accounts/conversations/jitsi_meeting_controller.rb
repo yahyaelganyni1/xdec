@@ -1,12 +1,14 @@
 class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accounts::Conversations::BaseController # rubocop:disable Layout/EndOfLine
   include JitsiMeetingLink
 
-  def index
+  def index # rubocop:disable Metrics/MethodLength
     conversation = @conversation
-    # get the username from the params
-    call = Call.create_call(conversation, conversation.assignee&.id,
-                            conversation.contact.email, Time.now)
 
+    # get the contact id from the contact table by using the conversatin.contact.email
+    contact = Contact.find_by(email: conversation.contact.email)
+
+    call = Call.create_call(conversation, conversation.assignee&.id,
+                            contact&.id, Time.now)
     username = conversation.assignee ? params[:username] : ''
 
     meeting_url = meeting_url(
@@ -22,6 +24,7 @@ class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accoun
       'call_id': call.id,
       'meeting_url': meeting_url,
       'username': username,
+      'contact_id': contact&.id || '',
       'assignee_id': conversation.assignee&.id || ''
     }, status: :ok
   end
@@ -59,7 +62,6 @@ class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accoun
     call = Call.find_call(call_id)
 
     call.end_call(Time.now) if call.present?
-
 
     # resolve the conversation
 
