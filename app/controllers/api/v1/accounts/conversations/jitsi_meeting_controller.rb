@@ -1,10 +1,10 @@
-class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accounts::Conversations::BaseController
+class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accounts::Conversations::BaseController # rubocop:disable Layout/EndOfLine
   include JitsiMeetingLink
 
   def index
     conversation = @conversation
     # get the username from the params
-    call = Call.create_call(conversation, conversation.assignee,
+    call = Call.create_call(conversation, conversation.assignee&.id,
                             conversation.contact.email, Time.now)
 
     username = conversation.assignee ? params[:username] : ''
@@ -20,7 +20,9 @@ class Api::V1::Accounts::Conversations::JitsiMeetingController < Api::V1::Accoun
     render json: {
       'conversation_id': conversation.display_id,
       'call_id': call.id,
-      'meeting_url': meeting_url
+      'meeting_url': meeting_url,
+      'username': username,
+      'assignee_id': conversation.assignee&.id || ''
     }, status: :ok
   end
 
