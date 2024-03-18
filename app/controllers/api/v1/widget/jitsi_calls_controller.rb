@@ -1,4 +1,4 @@
-class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
+class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # rubocop:disable Layout/EndOfLine,Metrics/ClassLength
   before_action :set_conversation, only: [:create, :index]
   before_action :set_message, only: [:update] # rubocop:disable Rails/LexicallyScopedActionFilter
   # before_action :set_meeting_url
@@ -54,7 +54,7 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
     p body_request
     p '___body_request___'
 
-    response = HTTParty.post(url,
+    response = HTTParty.post(url, # rubocop:disable Lint/UselessAssignment
                              verify: false,
                              body: {
                                'name': @conversation.contact.name,
