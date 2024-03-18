@@ -38,7 +38,7 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController
                                @conversation.contact.email,
                                @conversation.display_id,
                                @conversation.contact.name, '@conversation.assignee&.name')
-    
+
     auth_token = request.headers['X-Auth-Token']
 
     body_request = {
