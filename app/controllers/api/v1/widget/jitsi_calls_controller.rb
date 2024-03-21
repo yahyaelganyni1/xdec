@@ -1,4 +1,4 @@
-class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # rubocop:disable Layout/EndOfLine,Metrics/ClassLength
+class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # rubocop:disable Layout/EndOfLine
   before_action :set_conversation, only: [:create, :index]
   before_action :set_message, only: [:update] # rubocop:disable Rails/LexicallyScopedActionFilter
   # before_action :set_meeting_url
@@ -33,38 +33,12 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
     # the cesco server url
     url = ENV.fetch('CISCO_FINESSE_URL')
 
-
     meentin_name = meeting_url(@conversation.inbox_id,
                                @conversation.contact.email,
                                @conversation.display_id,
                                @conversation.contact.name, '@conversation.assignee&.name')
 
     auth_token = request.headers['X-Auth-Token']
-
-    body_request = {
-      'name': @conversation.contact.name,
-      'auth_token': auth_token,
-      'assignee_id': @conversation.assignee_id,
-      'meeting_url': meentin_name,
-      'conversation_id': @conversation.display_id,
-      'contact_email': @conversation.contact.email
-    }.to_json
-
-    p '___body_request___'
-    p body_request
-    p '___body_request___'
-
-    response = HTTParty.post(url, # rubocop:disable Lint/UselessAssignment
-                             verify: false,
-                             body: {
-                               'name': @conversation.contact.name,
-                               'auth_token': auth_token,
-                               'assignee_id': @conversation.assignee_id,
-                               'meeting_url': meentin_name,
-                               'conversation_id': @conversation.display_id,
-                               'contact_email': @conversation.contact.email
-                             }.to_json,
-                             headers: { 'Content-Type' => 'application/json' })
 
 
     @conversation.messages.create!({
@@ -80,9 +54,6 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
                                      sender: @conversation.contact
                                    })
 
-    auth_token = request.headers['X-Auth-Token']
-    url = ENV.fetch('CISCO_FINESSE_URL')
-
     response = HTTParty.post(url,
                              verify: false,
                              body: {
@@ -94,6 +65,7 @@ class Api::V1::Widget::JitsiCallsController < Api::V1::Widget::BaseController # 
                                'contact_email': @conversation.contact.email
                              }.to_json,
                              headers: { 'Content-Type' => 'application/json' })
+
 
     render json: {
       'message': {
