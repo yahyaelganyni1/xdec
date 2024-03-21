@@ -1,10 +1,7 @@
-import { start } from 'turbolinks';
 import { buildSearchParamsWithLocale } from './urlParamsHelper'
 const iframe = document.createElement('iframe');
 
 export const shake = (element, duration = 70, intensity = 25, iterations = 6) => {
-    console.log('test from shake function')
-    console.log('element', element)
     // Get original position for accurate return
     const originalPosition = element.getBoundingClientRect();
 
@@ -42,7 +39,6 @@ export const shake = (element, duration = 70, intensity = 25, iterations = 6) =>
 export const createIframe = (data, customerName = 'client') => {
     const iframeContainer = document.createElement('div');
     iframe.className = 'iframe-popup';
-    console.log('iframe', iframe)
     iframe.style.width = '100%';
     iframe.style.height = '100%';
     iframe.allow = 'camera; microphone; fullscreen; autoplay';
@@ -78,7 +74,6 @@ export const createIframe = (data, customerName = 'client') => {
     }).then(response => response.json())
         .then(data => {
             const meetingUrl = data.message.meeting_url;
-            console.log('meetingUrl====', data.message.meeting_url);
             iframe.src = meetingUrl;
         });
     // Set the position and z-index of the iframe

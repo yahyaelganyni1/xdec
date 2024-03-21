@@ -13,7 +13,6 @@ export const createIframe = (data, agentName) => {
     const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
     const accountId = data.account_id;
     const conversationId = data.conversation_id;
-    console.log(agentName, '==agentName==')
     const fullUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting?username=${agentName}`;
     const iframe = document.createElement('iframe');
     iframe.classList.add('video-call-iframe');
@@ -69,7 +68,7 @@ export const createIframe = (data, agentName) => {
 
     leaveButton.addEventListener('click', () => {
         iframeContainer.remove();
-      
+
         const endUrl = `${baseUrl}/api/v1/accounts/${accountId}/conversations/${conversationId}/jitsi_meeting/end_call?call_id=${callId}`
 
 

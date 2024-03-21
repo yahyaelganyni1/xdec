@@ -68,7 +68,6 @@ export default {
 
         async joinTheCall() {
             this.isLoading = true;
-            console.log('this.meetingData====', this.meetingData);
             try {
                 const search = buildSearchParamsWithLocale(window.location.search);
                 const baseUrl = window.location.href.split('/').slice(0, 3).join('/');
@@ -76,7 +75,6 @@ export default {
                 const xAuthToken = window.authToken;
                 const url = `${baseUrl}/api/v1/widget/jitsi_calls${search}`;
                 const os = navigator.platform.split(' ')[0];
-                console.log(url, 'url')
                 fetch(url, {
                     "headers": {
                         "accept": "application/json, text/plain, */*",
@@ -99,8 +97,6 @@ export default {
                         this.meetingUrl = data.message.meeting_url
                         // const taskId = data.message.task_id;
                         this.taskLocation = data.message.task_location;
-                        console.log('meeting has been created successfully', data.message.meeting_url);
-                        console.log(data.message.task_location, 'task_location');
                         this.isOpen = true;
                     })
             } catch (err) {

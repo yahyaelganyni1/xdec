@@ -122,7 +122,7 @@ class ActionCableConnector extends BaseActionCableConnector {
     const assigneeId = data.conversation.assignee_id;
     const currentUserId = this.app.$store.getters.getCurrentUserID;
     // const store = this.app.$store;
-    const openIframes = document.querySelectorAll('.iframe');
+    const openIframes = document.querySelectorAll('.video-call-iframe');
     const agentName = this.app.$store.getters["agents/getAgents"][0].available_name
 
     console.log(

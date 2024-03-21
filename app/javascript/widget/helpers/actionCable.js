@@ -56,13 +56,11 @@ class ActionCableConnector extends BaseActionCableConnector {
   };
 
   onMessageCreated = data => {
-    console.log(data)
     const popupIframe = document.querySelectorAll('.iframe-popup');
     // const dyteIframe = document.querySelectorAll('.dyte');
     const customerName = data.sender.name
     const store = this.app.$store;
 
-    console.log(store, '==store==')
     if (data.content.includes('is sending a nudge')) {
       shake(popupIframe[0])
     }
