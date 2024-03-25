@@ -158,9 +158,9 @@ export const createIframe = (data, agentName) => {
     buttonsContainer.style.display = 'flex';
     buttonsContainer.style.justifyContent = 'center';
     buttonsContainer.style.position = 'fixed';
-    buttonsContainer.style.top = '10px';
-    buttonsContainer.style.left = '30px';
-    buttonsContainer.style.width = '50%';
+    buttonsContainer.style.top = '50px';
+    buttonsContainer.style.left = '60px';
+    buttonsContainer.style.width = '100%';
     buttonsContainer.style.zIndex = '10001';
 
     buttonsContainer.classList.add('buttons-container');
